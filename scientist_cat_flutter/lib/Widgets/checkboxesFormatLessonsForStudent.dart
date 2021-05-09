@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class CheckBoxesFormatLessonsForStudent extends StatefulWidget {
   Function _callback;
 
-  CheckBoxesFormatLessonsForStudent(this._callback) {
-    _sss = new _CheckBoxesFormatLessonsForStudentState(_callback);
+  CheckBoxesFormatLessonsForStudent(this._callback, [List<String> values]) {
+    if(values == null)
+      _sss = new _CheckBoxesFormatLessonsForStudentState(_callback);
+    else
+      _sss = new _CheckBoxesFormatLessonsForStudentState(_callback, values);
   }
 
   _CheckBoxesFormatLessonsForStudentState _sss;
@@ -13,13 +16,20 @@ class CheckBoxesFormatLessonsForStudent extends StatefulWidget {
   createState() => _sss;
 }
 
-class _CheckBoxesFormatLessonsForStudentState extends State<CheckBoxesFormatLessonsForStudent> {
+class _CheckBoxesFormatLessonsForStudentState
+    extends State<CheckBoxesFormatLessonsForStudent> {
   Function _callback;
   bool _ttos = false;
   bool _stot = false;
   bool _distant = false;
 
-  _CheckBoxesFormatLessonsForStudentState(this._callback);
+  _CheckBoxesFormatLessonsForStudentState(this._callback, [List<String> values]){
+    if(values != null){
+      _ttos = values.contains("Преподаватель ко мне") ? true : false;
+      _stot = values.contains("Я к преподавателю") ? true : false;
+      _distant = values.contains("Дистанционно") ? true : false;
+    }
+  }
 
   Widget build(BuildContext context) {
     List<String> formats = [];
@@ -45,7 +55,7 @@ class _CheckBoxesFormatLessonsForStudentState extends State<CheckBoxesFormatLess
               });
             },
             controlAffinity:
-            ListTileControlAffinity.leading, //  <-- leading Checkbox
+                ListTileControlAffinity.leading, //  <-- leading Checkbox
           ),
           CheckboxListTile(
             title: Text(
@@ -62,7 +72,7 @@ class _CheckBoxesFormatLessonsForStudentState extends State<CheckBoxesFormatLess
               });
             },
             controlAffinity:
-            ListTileControlAffinity.leading, //  <-- leading Checkbox
+                ListTileControlAffinity.leading, //  <-- leading Checkbox
           ),
           CheckboxListTile(
             title: Text(
@@ -79,7 +89,7 @@ class _CheckBoxesFormatLessonsForStudentState extends State<CheckBoxesFormatLess
               });
             },
             controlAffinity:
-            ListTileControlAffinity.leading, //  <-- leading Checkbox
+                ListTileControlAffinity.leading, //  <-- leading Checkbox
           ),
         ],
       ),

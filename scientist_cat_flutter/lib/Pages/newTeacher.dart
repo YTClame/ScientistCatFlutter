@@ -13,7 +13,7 @@ import 'package:toast/toast.dart';
 
 import '../APIs.dart';
 import '../Settings.dart';
-
+import 'lkAdapter.dart';
 
 //Каллбеки:
 String _city = "";
@@ -48,11 +48,11 @@ void textChangedBirthday(BuildContext context, String text) {
   _birthday = text;
 }
 
-void sexChanged(BuildContext context, String text){
+void sexChanged(BuildContext context, String text) {
   _sex = text;
 }
 
-void formatLessonsChanged(BuildContext context, List<String> formats){
+void formatLessonsChanged(BuildContext context, List<String> formats) {
   _formatLessons = formats;
 }
 
@@ -60,115 +60,163 @@ void educationChanged(BuildContext context, String text) {
   _education = text;
 }
 
-void stashChanged(BuildContext context, String text){
+void stashChanged(BuildContext context, String text) {
   _stash = text;
 }
 
-void phoneChanged(BuildContext context, String text){
+void phoneChanged(BuildContext context, String text) {
   _phone = text;
 }
 
-void loginChanged(BuildContext context, String text){
+void loginChanged(BuildContext context, String text) {
   _login = text;
 }
 
-void passwordChanged(BuildContext context, String text){
+void passwordChanged(BuildContext context, String text) {
   _password = text;
 }
 
-void emailChanged(BuildContext context, String text){
+void emailChanged(BuildContext context, String text) {
   _email = text;
 }
 
-void lessonsChanged(BuildContext context, List<String> lessons){
+void lessonsChanged(BuildContext context, List<String> lessons) {
   _lessons = lessons;
 }
 
-void priceChanged(BuildContext context, String text){
+void priceChanged(BuildContext context, String text) {
   _price = text;
 }
 
-void viewsLessonsChanged(BuildContext context, List<String> views){
+void viewsLessonsChanged(BuildContext context, List<String> views) {
   _viewsLessons = views;
 }
 
 void clickRegisterButton(BuildContext context) {
- String stotRes = "0", ttosRes = "0", distantRes = "0";
- for(String s in _formatLessons){
-   if(s == "Я к ученику")
-     ttosRes = "1";
-   if(s == "Ученик ко мне")
-     stotRes = "1";
-   if(s == "Дистанционно")
-     distantRes = "1";
- }
- String sexRes = "m";
- if (_sex == "Женский")
-   sexRes = "w";
- String mathRes = "0", rusRes = "0", phisRes = "0", infRes= "0", chemRes = "0", bioRes = "0", histRes = "0", socRes = "0", litRes = "0", geoRes="0", ecoRes = "0", engRes = "0", nemRes = "0", soloRes = "0", groupRes = "0", homeRes = "0", standartRes = "0";
- for(String s in _lessons){
-   if(s == "Математика")
-     mathRes = "1";
-   if(s == "Русский язык")
-     rusRes = "1";
-   if(s == "Физика")
-     phisRes = "1";
-   if(s == "Информатика")
-     infRes = "1";
-   if(s == "Химия")
-     chemRes = "1";
-   if(s == "Биология")
-     bioRes = "1";
-   if(s == "История")
-     histRes = "1";
-   if(s == "Обществознание")
-     socRes = "1";
-   if(s == "Литература")
-     litRes = "1";
-   if(s == "География")
-     geoRes = "1";
-   if(s == "Экономика")
-     ecoRes = "1";
-   if(s == "Английский язык")
-     engRes = "1";
-   if(s == "Немецкий язык")
-     nemRes = "1";
- }
+  String stotRes = "0", ttosRes = "0", distantRes = "0";
+  for (String s in _formatLessons) {
+    if (s == "Я к ученику") ttosRes = "1";
+    if (s == "Ученик ко мне") stotRes = "1";
+    if (s == "Дистанционно") distantRes = "1";
+  }
+  String sexRes = "m";
+  if (_sex == "Женский") sexRes = "w";
+  String mathRes = "0",
+      rusRes = "0",
+      phisRes = "0",
+      infRes = "0",
+      chemRes = "0",
+      bioRes = "0",
+      histRes = "0",
+      socRes = "0",
+      litRes = "0",
+      geoRes = "0",
+      ecoRes = "0",
+      engRes = "0",
+      nemRes = "0",
+      soloRes = "0",
+      groupRes = "0",
+      homeRes = "0",
+      standartRes = "0";
+  for (String s in _lessons) {
+    if (s == "Математика") mathRes = "1";
+    if (s == "Русский язык") rusRes = "1";
+    if (s == "Физика") phisRes = "1";
+    if (s == "Информатика") infRes = "1";
+    if (s == "Химия") chemRes = "1";
+    if (s == "Биология") bioRes = "1";
+    if (s == "История") histRes = "1";
+    if (s == "Обществознание") socRes = "1";
+    if (s == "Литература") litRes = "1";
+    if (s == "География") geoRes = "1";
+    if (s == "Экономика") ecoRes = "1";
+    if (s == "Английский язык") engRes = "1";
+    if (s == "Немецкий язык") nemRes = "1";
+  }
 
- for(String s in _viewsLessons){
-   if(s == "Разовые")
-     soloRes = "1";
-   if(s == "Групповые")
-     groupRes = "1";
-   if(s == "Помощь с домашней работой")
-     homeRes = "1";
-   if(s == "Обычные")
-     standartRes = "1";
- }
+  for (String s in _viewsLessons) {
+    if (s == "Разовые") soloRes = "1";
+    if (s == "Групповые") groupRes = "1";
+    if (s == "Помощь с домашней работой") homeRes = "1";
+    if (s == "Обычные") standartRes = "1";
+  }
 
- API.newTeacher(_city, _secondName, _firstName, _birthday, stotRes, ttosRes, distantRes, _education, _stash, sexRes, _phone, _login, _password, _email, mathRes, rusRes, phisRes, infRes, chemRes, bioRes, histRes, socRes, litRes, geoRes, ecoRes, engRes, nemRes, _price, soloRes, groupRes, homeRes, standartRes).then((res) {
-   if(res[0] == "Error"){
-     if(res[1] == "Bad Login")
-       Toast.show("Логин некорректный или уже занят", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
-     else if(res[1] == "Bad Phone")
-       Toast.show("Номер телефона некорректный или уже занят", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
-     else if(res[1] == "Bad Email")
-       Toast.show("Email некорректный или уже занят", context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
-    else
-       Toast.show(res[1], context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
-    return;
-   }
-   else{
-     Settings().setToken(res[1]);
-     //TODO: Тут переход на активити профиля после успешной регистрации
-   }
- });
+  API
+      .newTeacher(
+          _city,
+          _secondName,
+          _firstName,
+          _birthday,
+          stotRes,
+          ttosRes,
+          distantRes,
+          _education,
+          _stash,
+          sexRes,
+          _phone,
+          _login,
+          _password,
+          _email,
+          mathRes,
+          rusRes,
+          phisRes,
+          infRes,
+          chemRes,
+          bioRes,
+          histRes,
+          socRes,
+          litRes,
+          geoRes,
+          ecoRes,
+          engRes,
+          nemRes,
+          _price,
+          soloRes,
+          groupRes,
+          homeRes,
+          standartRes)
+      .then((res) {
+    if (res[0] == "Error") {
+      if (res[1] == "Bad Login")
+        Toast.show("Логин некорректный или уже занят", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      else if (res[1] == "Bad Phone")
+        Toast.show("Номер телефона некорректный или уже занят", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      else if (res[1] == "Bad Email")
+        Toast.show("Email некорректный или уже занят", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      else
+        Toast.show(res[1], context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      return;
+    } else {
+      Settings().setToken(res[1]);
+      Settings().setRole("Репетитор");
+      API
+          .getInfoAboutUserForToken(res[1], "Репетитор")
+          .then((value) => {_loadLK(context, value)});
+    }
+  });
+}
+
+void _loadLK(BuildContext context, Map<String, dynamic> info) {
+  Settings().setUserInfo(info);
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) =>
+              LkAdapter(TypePage.LkTeacher)),
+      (Route<dynamic> route) => false);
 }
 
 class NewTeacherWidget extends StatelessWidget {
   List<String> _cities;
   DroppedList citiesList = new DroppedList([], "Загрузка", cityChanged);
-  DroppedList educationList = new DroppedList(['Студент', 'Аспирант', 'Учитель', 'Преподаватель'], "Студент", educationChanged);
+  DroppedList educationList = new DroppedList(
+      ['Студент', 'Аспирант', 'Учитель', 'Преподаватель'],
+      "Студент",
+      educationChanged);
 
   NewTeacherWidget() {
     API.getCities().then((cities) {

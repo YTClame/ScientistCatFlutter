@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class CheckBoxesLessons extends StatefulWidget {
   Function _callback;
 
-  CheckBoxesLessons(this._callback) {
-    _sss = new _CheckBoxesLessonsState(_callback);
+  CheckBoxesLessons(this._callback, [List<String> values]) {
+    if(values == null)
+      _sss = new _CheckBoxesLessonsState(_callback);
+    else
+      _sss = new _CheckBoxesLessonsState(_callback, values);
   }
 
   _CheckBoxesLessonsState _sss;
@@ -29,7 +32,23 @@ class _CheckBoxesLessonsState extends State<CheckBoxesLessons> {
   bool _eng = false;
   bool _nem = false;
 
-  _CheckBoxesLessonsState(this._callback);
+  _CheckBoxesLessonsState(this._callback, [List<String> values]){
+    if (values != null){
+      _math = values.contains("Математика") ? true : false;
+      _rus = values.contains("Русский язык") ? true : false;
+      _phis = values.contains("Физика") ? true : false;
+      _inf = values.contains("Информатика") ? true : false;
+      _chem = values.contains("Химия") ? true : false;
+      _bio = values.contains("Биология") ? true : false;
+      _hist = values.contains("История") ? true : false;
+      _soc = values.contains("Обществознание") ? true : false;
+      _lit = values.contains("Литература") ? true : false;
+      _geo = values.contains("География") ? true : false;
+      _eco = values.contains("Экономика") ? true : false;
+      _eng = values.contains("Английский язык") ? true : false;
+      _nem = values.contains("Немецкий язык") ? true : false;
+    }
+  }
 
   Widget build(BuildContext context) {
     List<String> lessons = [];

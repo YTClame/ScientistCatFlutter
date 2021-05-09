@@ -15,6 +15,7 @@ import 'package:toast/toast.dart';
 
 import '../APIs.dart';
 import '../Settings.dart';
+import 'lkAdapter.dart';
 
 
 //Каллбеки:
@@ -129,9 +130,22 @@ void clickRegisterButton(BuildContext context) {
     }
     else{
       Settings().setToken(res[1]);
-      //TODO: Тут переход на активити профиля после успешной регистрации
+      Settings().setRole("Ученик");
+      API
+          .getInfoAboutUserForToken(res[1], "Ученик")
+          .then((value) => {_loadLK(context, value)});
     }
   });
+}
+
+void _loadLK(BuildContext context, Map<String, dynamic> info) {
+  Settings().setUserInfo(info);
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) =>
+              LkAdapter(TypePage.LkStudent)),
+          (Route<dynamic> route) => false);
 }
 
 class NewStudentWidget extends StatelessWidget {

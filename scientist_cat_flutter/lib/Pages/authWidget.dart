@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:scientist_cat_flutter/Pages/lkAdapter.dart';
 import 'package:scientist_cat_flutter/Widgets/button.dart';
 import 'package:scientist_cat_flutter/Widgets/mainText.dart';
 import 'package:scientist_cat_flutter/Widgets/textField.dart';
@@ -15,7 +16,52 @@ import 'newTeacher.dart';
 
 //Каллбеки на кнопки:
 void clickEnterButton(BuildContext context) {
-  API.login(login, password);
+  API.login(login, password).then((value) => {handlerLoginRes(value, context)});
+}
+
+void handlerLoginRes(Map<String, dynamic> map, BuildContext context) {
+  String token;
+  String role;
+  if (map['Токен'] != 'Error') {
+    token = map['Токен'];
+    role = map['Роль'];
+    if (role == "Репетитор") {
+      API.getInfoAboutUserForToken(token, role).then(
+          (value) => {_setInfoAboutUserAndOpenLK(context, value, token, role)});
+    }
+    if (role == "Ученик") {
+      API.getInfoAboutUserForToken(token, role).then(
+          (value) => {_setInfoAboutUserAndOpenLK(context, value, token, role)});
+    }
+  } else {
+    Toast.show("Ошибка авторизации!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+  }
+}
+
+void _setInfoAboutUserAndOpenLK(BuildContext context, Map<String, dynamic> info,
+    String token, String role) {
+  if (info['Статус'] == "Error") {
+    Toast.show("Ошибка авторизации!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+  } else {
+    Settings().setToken(token);
+    Settings().setRole(role);
+    Settings().setUserInfo(info);
+    if (role == "Репетитор") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => LkAdapter(TypePage.LkTeacher)),
+          (Route<dynamic> route) => false);
+    } else if (role == "Ученик") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => LkAdapter(TypePage.LkStudent)),
+          (Route<dynamic> route) => false);
+    }
+  }
 }
 
 void clickNewTeacherButton(BuildContext context) {
