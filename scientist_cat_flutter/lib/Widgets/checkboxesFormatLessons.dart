@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class CheckBoxesFormatLessons extends StatefulWidget {
   Function _callback;
 
-  CheckBoxesFormatLessons(this._callback) {
-    _sss = new _CheckBoxesFormatLessonsState(_callback);
+  CheckBoxesFormatLessons(this._callback, [List<String> values]) {
+    if(values == null)
+      _sss = new _CheckBoxesFormatLessonsState(_callback);
+    else
+      _sss = new _CheckBoxesFormatLessonsState(_callback, values);
   }
 
   _CheckBoxesFormatLessonsState _sss;
@@ -19,7 +22,13 @@ class _CheckBoxesFormatLessonsState extends State<CheckBoxesFormatLessons> {
   bool _stot = false;
   bool _distant = false;
 
-  _CheckBoxesFormatLessonsState(this._callback);
+  _CheckBoxesFormatLessonsState(this._callback, [List<String> values]){
+    if(values != null){
+      _ttos = values.contains("Я к ученику") ? true : false;
+      _stot = values.contains("Ученик ко мне") ? true : false;
+      _distant = values.contains("Дистанционно") ? true : false;
+    }
+  }
 
   Widget build(BuildContext context) {
     List<String> formats = [];

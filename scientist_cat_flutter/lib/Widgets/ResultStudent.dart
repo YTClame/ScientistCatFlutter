@@ -3,29 +3,22 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 
-import '../APIs.dart';
 import '../Settings.dart';
 import 'textFoundResult.dart';
 
-class ResultTeacher extends StatelessWidget {
+class ResultStudent extends StatelessWidget {
   final String _secondName;
   final String _firstName;
-  final String _education;
-  final String _stash;
-  final String _price;
+  final String _class;
   final String _photo;
   final String _id;
-  final Function _callback;
 
-  ResultTeacher(this._secondName, this._firstName, this._education, this._stash,
-      this._price, this._photo, this._id, this._callback);
+  ResultStudent(this._secondName, this._firstName, this._class, this._photo, this._id);
 
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
-      onTap: () {
-        _openUserTeacher(context);
-      },
+      onTap: () {},
       child: Container(
         width: 300,
         decoration: BoxDecoration(
@@ -44,7 +37,7 @@ class ResultTeacher extends StatelessWidget {
                     border: new Border.all(color: Colors.black),
                   ),
                   child:
-                      Image.network(Settings().getHost() + _photo.substring(1)),
+                  Image.network(Settings().getHost() + _photo.substring(1)),
                 ),
               ),
             ),
@@ -56,9 +49,7 @@ class ResultTeacher extends StatelessWidget {
                   children: [
                     new FoundResultText("Фамилия: " + _secondName),
                     new FoundResultText("Имя: " + _firstName),
-                    new FoundResultText("Образование: " + _education),
-                    new FoundResultText("Стаж: " + _stash),
-                    new FoundResultText("Ставка: " + _price),
+                    new FoundResultText("Класс: " + _class),
                   ],
                 ),
               ),
@@ -68,13 +59,4 @@ class ResultTeacher extends StatelessWidget {
       ),
     );
   }
-
-  void _openUserTeacher(BuildContext context){
-    API.loadInfoAboutTeacher(_id).then((value) => _openPage(context, value));
-  }
-
-  void _openPage(BuildContext context, Map<String, dynamic> res){
-    _callback(context, res);
-  }
-
 }

@@ -340,4 +340,52 @@ class API {
       res.add(map);
     return res;
   }
+
+  static Future<List<Map<String, dynamic>>> foundStudent(Map<String, dynamic> filter) async {
+    final url = Uri.parse(Settings().getHost() + 'api/foundStudent');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "stot=" + filter['stot'] +
+        "&ttos=" + filter['ttos'] +
+        "&dist=" + filter['dist'] +
+        "&minClass=" + filter['minClass'] +
+        "&maxClass=" + filter['maxClass'] +
+        "&sex=" + filter['sex'] +
+        "&math=" + filter['math'] +
+        "&rus=" + filter['rus'] +
+        "&phis=" + filter['phis'] +
+        "&inf=" + filter['inf'] +
+        "&chem=" + filter['chem'] +
+        "&bio=" + filter['bio'] +
+        "&hist=" + filter['hist'] +
+        "&soc=" + filter['soc'] +
+        "&lit=" + filter['lit'] +
+        "&geo=" + filter['geo'] +
+        "&eco=" + filter['eco'] +
+        "&eng=" + filter['eng'] +
+        "&nem=" + filter['nem'] +
+        "&token=" + filter['token'];
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    List<dynamic> listRes = jsonDecode(body) as List;
+    List<Map<String, dynamic>> res = [];
+    for(Map<String, dynamic> map in listRes)
+      res.add(map);
+    return res;
+  }
+
+  static Future<Map<String, dynamic>> loadInfoAboutTeacher(String id) async {
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    Uri url;
+    url = Uri.parse(Settings().getHost() + 'api/getInformationAboutTeacher?id=' + id);
+    var response = await get(url, headers: headers);
+    return jsonDecode(response.body);
+  }
 }

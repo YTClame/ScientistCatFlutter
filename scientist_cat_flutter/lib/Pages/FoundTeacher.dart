@@ -5,8 +5,8 @@ import 'package:scientist_cat_flutter/Widgets/TeacherFilter.dart';
 import '../APIs.dart';
 
 class FoundTeacher extends StatefulWidget {
-  FoundTeacher() {
-    _sss = new _FoundTeacherState();
+  FoundTeacher(Function _callback) {
+    _sss = new _FoundTeacherState(_callback);
   }
 
   _FoundTeacherState _sss;
@@ -17,13 +17,13 @@ class FoundTeacher extends StatefulWidget {
 
 class _FoundTeacherState extends State<FoundTeacher> {
   List<Map<String, dynamic>> _teachers;
+  Function _callback;
 
-  _FoundTeacherState() {
+  _FoundTeacherState(this._callback) {
     _teachers = [];
   }
 
   Widget build(BuildContext context) {
-    //_callback(context, lessons);
     return new Container(
       child: new SingleChildScrollView(
         child: new Column(
@@ -38,7 +38,8 @@ class _FoundTeacherState extends State<FoundTeacher> {
                       teacher['Стаж'].toString(),
                       teacher['Ставка'].toString(),
                       teacher['Фото'],
-                      teacher['ID'].toString()))
+                      teacher['ID'].toString(),
+                      _callback))
                   .toList(),
             ),
           ],
