@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scientist_cat_flutter/Pages/FoundTeacher.dart';
 import 'package:scientist_cat_flutter/Pages/LkStudentProfile.dart';
 import 'package:scientist_cat_flutter/Pages/LkTeacherProfile.dart';
+import 'package:scientist_cat_flutter/Pages/UserStudent.dart';
 import 'package:scientist_cat_flutter/Pages/UserTeacher.dart';
 import 'package:scientist_cat_flutter/Widgets/drawer.dart';
 
@@ -26,11 +27,11 @@ enum TypePage {
 class LkAdapter extends StatefulWidget {
   final TypePage _tp;
 
-  LkAdapter(this._tp, [Map<String, dynamic> usInf]) {
+  LkAdapter(this._tp, [BuildContext context, Map<String, dynamic> usInf]) {
     if (usInf == null)
       sss = new LkAdapterState(_tp);
     else
-      sss = new LkAdapterState(_tp, usInf);
+      sss = new LkAdapterState(_tp, context, usInf);
   }
 
   LkAdapterState sss;
@@ -47,13 +48,13 @@ class LkAdapterState extends State<LkAdapter> {
   Widget _mainWidget;
   bool _isTeacher;
 
-  LkAdapterState(this._tp, [Map<String, dynamic> usInf]) {
+  LkAdapterState(this._tp, [BuildContext context, Map<String, dynamic> usInf]) {
     if (usInf != null) _usInf = usInf;
     _userInfo = Settings().getUserInfo();
     if (usInf == null)
       _setTitleAndMainWidget(_tp);
     else
-      _setTitleAndMainWidget(_tp, _usInf);
+      _setTitleAndMainWidget(_tp, context, _usInf);
   }
 
   void openLK(BuildContext context) {
@@ -73,10 +74,14 @@ class LkAdapterState extends State<LkAdapter> {
   }
 
   void openUserTeacher(BuildContext context, Map<String, dynamic> userInfo) {
-    _setTitleAndMainWidget(TypePage.UserTeacher, userInfo);
+    _setTitleAndMainWidget(TypePage.UserTeacher, context, userInfo);
   }
 
-  void _setTitleAndMainWidget(TypePage tp, [Map<String, dynamic> userInfo]) {
+  void openUserStudent(BuildContext context, Map<String, dynamic> userInfo) {
+    _setTitleAndMainWidget(TypePage.UserStudent, context, userInfo);
+  }
+
+  void _setTitleAndMainWidget(TypePage tp, [BuildContext context, Map<String, dynamic> userInfo]) {
     switch (tp) {
       case TypePage.LkTeacher:
         _title = "Профиль";
@@ -88,7 +93,7 @@ class LkAdapterState extends State<LkAdapter> {
         break;
       case TypePage.FoundTeacher:
         _title = "Поиск ученика";
-        _mainWidget = new FoundStudent();
+        _mainWidget = new FoundStudent(openUserStudent);
         break;
       case TypePage.FoundStudent:
         _title = "Поиск репетитора";
@@ -100,11 +105,16 @@ class LkAdapterState extends State<LkAdapter> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-              new LkAdapter(TypePage.SecondExUserTeacher, userInfo)),
+              new LkAdapter(TypePage.SecondExUserTeacher, context, userInfo)),
         );
         break;
       case TypePage.UserStudent:
-        _title = "";
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              new LkAdapter(TypePage.SecondExUserStudent, context, userInfo)),
+        );
         break;
       case TypePage.SecondExUserTeacher:
         _title = "Профиль репетитора";
@@ -112,6 +122,7 @@ class LkAdapterState extends State<LkAdapter> {
         break;
       case TypePage.SecondExUserStudent:
         _title = "Профиль ученика";
+        _mainWidget = new UserStudent(userInfo);
         break;
       case TypePage.Messenger:
         _title = "Мессенджер";

@@ -149,16 +149,8 @@ void _loadLK(BuildContext context, Map<String, dynamic> info) {
 }
 
 class NewStudentWidget extends StatelessWidget {
-  List<String> _cities;
-  DroppedList citiesList = new DroppedList([], "Загрузка", cityChanged);
+  DroppedList citiesList = new DroppedList(Settings().getCities(), Settings().getCities()[0], cityChanged);
   DroppedList classList = new DroppedList(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'], "1", classChanged);
-
-  NewStudentWidget() {
-    API.getCities().then((cities) {
-      this._cities = cities;
-      citiesList.updateList(this._cities[0], cities);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

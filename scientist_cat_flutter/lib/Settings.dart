@@ -13,49 +13,51 @@ class Settings {
 
   Settings._internal();
 
+  String _host = '';
 
-  String _host ='';
-  String getHost(){
+  String getHost() {
     return _host;
   }
-  String setHost(String host){
+
+  String setHost(String host) {
     this._host = host;
   }
 
-  String getToken(){
-    try{
-      String token = box.read('token');
-      return token;
-    }
-    catch(e){
-      return "";
-    }
+  String getToken() {
+    String token = box.read('token');
+    if (token == null) return "";
+    return token;
   }
 
-  void setToken(String token){
+  void setToken(String token) {
     box.write('token', token);
   }
 
-  String getRole(){
-    try{
-      String role = box.read('role');
-      return role;
-    }
-    catch(e){
-      return "";
-    }
+  String getRole() {
+    String role = box.read('role');
+    if (role == null) return "";
+    return role;
   }
 
-  void setRole(String role){
+  void setRole(String role) {
     box.write('role', role);
   }
 
-  Map<String, dynamic> _userInfo;
-  Map<String, dynamic> getUserInfo(){
-    return _userInfo;
+  List<String> _cities = [];
+  List<String> getCities(){
+    return _cities;
   }
-  void setUserInfo(Map<String, dynamic> userInfo){
-    this._userInfo = userInfo;
+  void setCities(List<String> cities){
+    _cities = cities;
   }
 
+  Map<String, dynamic> _userInfo;
+
+  Map<String, dynamic> getUserInfo() {
+    return _userInfo;
+  }
+
+  void setUserInfo(Map<String, dynamic> userInfo) {
+    this._userInfo = userInfo;
+  }
 }

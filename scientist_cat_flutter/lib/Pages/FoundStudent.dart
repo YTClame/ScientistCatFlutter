@@ -7,8 +7,8 @@ import 'package:scientist_cat_flutter/Widgets/TeacherFilter.dart';
 import '../APIs.dart';
 
 class FoundStudent extends StatefulWidget {
-  FoundStudent() {
-    _sss = new _FoundStudentState();
+  FoundStudent(Function _callback) {
+    _sss = new _FoundStudentState(_callback);
   }
 
   _FoundStudentState _sss;
@@ -19,8 +19,9 @@ class FoundStudent extends StatefulWidget {
 
 class _FoundStudentState extends State<FoundStudent> {
   List<Map<String, dynamic>> _students;
+  Function _callback;
 
-  _FoundStudentState() {
+  _FoundStudentState(this._callback) {
     _students = [];
   }
 
@@ -33,11 +34,12 @@ class _FoundStudentState extends State<FoundStudent> {
             new Column(
               children: _students
                   .map<Widget>((student) => new ResultStudent(
-                  student['Фамилия'],
-                  student['Имя'],
-                  student['Класс'].toString(),
-                  student['Фото'],
-                  student['ID'].toString()))
+                      student['Фамилия'],
+                      student['Имя'],
+                      student['Класс'].toString(),
+                      student['Фото'],
+                      student['ID'].toString(),
+                      _callback))
                   .toList(),
             ),
           ],

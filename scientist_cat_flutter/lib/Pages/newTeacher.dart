@@ -205,25 +205,16 @@ void _loadLK(BuildContext context, Map<String, dynamic> info) {
   Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-          builder: (BuildContext context) =>
-              LkAdapter(TypePage.LkTeacher)),
+          builder: (BuildContext context) => LkAdapter(TypePage.LkTeacher)),
       (Route<dynamic> route) => false);
 }
 
 class NewTeacherWidget extends StatelessWidget {
-  List<String> _cities;
-  DroppedList citiesList = new DroppedList([], "Загрузка", cityChanged);
+  DroppedList citiesList = new DroppedList(Settings().getCities(), Settings().getCities()[0], cityChanged);
   DroppedList educationList = new DroppedList(
       ['Студент', 'Аспирант', 'Учитель', 'Преподаватель'],
       "Студент",
       educationChanged);
-
-  NewTeacherWidget() {
-    API.getCities().then((cities) {
-      this._cities = cities;
-      citiesList.updateList(this._cities[0], cities);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

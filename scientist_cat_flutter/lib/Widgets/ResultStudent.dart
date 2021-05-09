@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 
+import '../APIs.dart';
 import '../Settings.dart';
 import 'textFoundResult.dart';
 
@@ -12,13 +13,16 @@ class ResultStudent extends StatelessWidget {
   final String _class;
   final String _photo;
   final String _id;
+  final Function _callback;
 
-  ResultStudent(this._secondName, this._firstName, this._class, this._photo, this._id);
+  ResultStudent(this._secondName, this._firstName, this._class, this._photo, this._id, this._callback);
 
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
-      onTap: () {},
+      onTap: () {
+        _openUserStudent(context);
+      },
       child: Container(
         width: 300,
         decoration: BoxDecoration(
@@ -58,5 +62,13 @@ class ResultStudent extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _openUserStudent(BuildContext context){
+    API.loadInfoAboutStudent(_id).then((value) => _openPage(context, value));
+  }
+
+  void _openPage(BuildContext context, Map<String, dynamic> res){
+    _callback(context, res);
   }
 }

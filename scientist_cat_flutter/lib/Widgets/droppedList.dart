@@ -11,11 +11,6 @@ class DroppedList extends StatefulWidget {
     _dls = new DroppedListState(_cities, _cityChoice, _callback);
   }
 
-  void updateList(String cityChoice, List<String> cities) {
-    this._cities = cities;
-    this._cityChoice = cityChoice;
-    _dls.update(_cityChoice, _cities);
-  }
   DroppedListState _dls;
 
   @override

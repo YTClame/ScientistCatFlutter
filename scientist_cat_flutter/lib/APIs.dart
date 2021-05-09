@@ -388,4 +388,14 @@ class API {
     var response = await get(url, headers: headers);
     return jsonDecode(response.body);
   }
+
+  static Future<Map<String, dynamic>> loadInfoAboutStudent(String id) async {
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    Uri url;
+    url = Uri.parse(Settings().getHost() + 'api/getInformationAboutStudent?id=' + id);
+    var response = await get(url, headers: headers);
+    return jsonDecode(response.body);
+  }
 }
