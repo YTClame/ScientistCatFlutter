@@ -95,9 +95,6 @@ void _setInfoAboutUserAndOpenLK(
     runApp(new AuthWidget());
   } else {
     Settings().setUserInfo(info);
-    log('Токен: ' + Settings().getToken());
-    log('Роль: ' + Settings().getRole());
-    log('email: ' + Settings().getUserInfo()['Email']);
     if (role == "Репетитор") {
       runApp(new LkAdapter(TypePage.LkTeacher));
     } else if (role == "Ученик") {

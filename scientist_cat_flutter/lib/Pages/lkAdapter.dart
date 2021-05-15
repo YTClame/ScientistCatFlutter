@@ -8,8 +8,11 @@ import 'package:scientist_cat_flutter/Pages/UserStudent.dart';
 import 'package:scientist_cat_flutter/Pages/UserTeacher.dart';
 import 'package:scientist_cat_flutter/Widgets/drawer.dart';
 
+import '../APIs.dart';
 import '../Settings.dart';
+import 'Contacts.dart';
 import 'FoundStudent.dart';
+import 'Messenger.dart';
 
 enum TypePage {
   LkTeacher,
@@ -20,7 +23,9 @@ enum TypePage {
   UserStudent,
   SecondExUserTeacher,
   SecondExUserStudent,
+  Contacts,
   Messenger,
+  SecondMessenger,
   Rasp
 }
 
@@ -73,6 +78,15 @@ class LkAdapterState extends State<LkAdapter> {
     setState(() {});
   }
 
+  void loadContacts(BuildContext context) {
+    _setTitleAndMainWidget(TypePage.Contacts);
+  }
+
+  void openMessengerWithUser(
+      BuildContext context, Map<String, dynamic> messengerResponse) {
+    _setTitleAndMainWidget(TypePage.Messenger, context, messengerResponse);
+  }
+
   void openUserTeacher(BuildContext context, Map<String, dynamic> userInfo) {
     _setTitleAndMainWidget(TypePage.UserTeacher, context, userInfo);
   }
@@ -81,7 +95,8 @@ class LkAdapterState extends State<LkAdapter> {
     _setTitleAndMainWidget(TypePage.UserStudent, context, userInfo);
   }
 
-  void _setTitleAndMainWidget(TypePage tp, [BuildContext context, Map<String, dynamic> userInfo]) {
+  void _setTitleAndMainWidget(TypePage tp,
+      [BuildContext context, Map<String, dynamic> userInfo]) {
     switch (tp) {
       case TypePage.LkTeacher:
         _title = "Профиль";
@@ -104,28 +119,43 @@ class LkAdapterState extends State<LkAdapter> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-              new LkAdapter(TypePage.SecondExUserTeacher, context, userInfo)),
+              builder: (context) => new LkAdapter(
+                  TypePage.SecondExUserTeacher, context, userInfo)),
         );
         break;
       case TypePage.UserStudent:
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-              new LkAdapter(TypePage.SecondExUserStudent, context, userInfo)),
+              builder: (context) => new LkAdapter(
+                  TypePage.SecondExUserStudent, context, userInfo)),
         );
         break;
       case TypePage.SecondExUserTeacher:
         _title = "Профиль репетитора";
-        _mainWidget = new UserTeacher(userInfo);
+        _mainWidget = new UserTeacher(userInfo, openMessengerWithUser);
         break;
       case TypePage.SecondExUserStudent:
         _title = "Профиль ученика";
-        _mainWidget = new UserStudent(userInfo);
+        _mainWidget = new UserStudent(userInfo, openMessengerWithUser);
+        break;
+      case TypePage.Contacts:
+        _title = "Мессенджер";
+        API
+            .getContacts(Settings().getToken())
+            .then((contacts) => {_contactsIsLoaded(contacts)});
         break;
       case TypePage.Messenger:
-        _title = "Мессенджер";
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.SecondMessenger, context, userInfo)),
+        );
+        break;
+      case TypePage.SecondMessenger:
+        _title = userInfo['MobileName'];
+        _mainWidget = new Messenger((){}, userInfo['Messages']);
         break;
       case TypePage.Rasp:
         _title = "Расписание";
@@ -134,21 +164,27 @@ class LkAdapterState extends State<LkAdapter> {
     _isTeacher = Settings().getRole() == "Репетитор" ? true : false;
   }
 
+  _contactsIsLoaded(List<Map<String, dynamic>> contacts) {
+    _mainWidget = Contacts(openMessengerWithUser, contacts);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     if (this._tp == TypePage.SecondExUserTeacher ||
-        this._tp == TypePage.SecondExUserStudent)
+        this._tp == TypePage.SecondExUserStudent ||
+        this._tp == TypePage.SecondMessenger)
       return new WillPopScope(
-          onWillPop: () {
-            Navigator.of(context).pop();
-          },
-          child: Scaffold(
-            appBar: AppBar(title: Text(_title)),
-            body: Container(
-              child: Center(child: _mainWidget),
-              color: Color.fromRGBO(198, 224, 255, 1.0),
-            ),
+        onWillPop: () {
+          Navigator.of(context).pop();
+        },
+        child: Scaffold(
+          appBar: AppBar(title: Text(_title)),
+          body: Container(
+            child: Center(child: _mainWidget),
+            color: Color.fromRGBO(198, 224, 255, 1.0),
           ),
+        ),
       );
     else
       return new MaterialApp(
@@ -163,7 +199,8 @@ class LkAdapterState extends State<LkAdapter> {
               _userInfo['Фамилия'] + " " + _userInfo['Имя'],
               _userInfo['Фото'],
               openLK,
-              openFound),
+              openFound,
+              loadContacts),
         ),
       );
   }

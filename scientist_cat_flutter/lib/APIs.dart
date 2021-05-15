@@ -398,4 +398,68 @@ class API {
     var response = await get(url, headers: headers);
     return jsonDecode(response.body);
   }
+
+  static Future<List<Map<String, dynamic>>> getContacts(String token) async {
+    final url = Uri.parse(Settings().getHost() + 'api/loadContacts');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token;
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    List<dynamic> listRes = jsonDecode(body) as List;
+    List<Map<String, dynamic>> res = [];
+    for(Map<String, dynamic> map in listRes)
+      res.add(map);
+    return res;
+  }
+
+  static Future<Map<String, dynamic>> loadMesseges(String token, int id) async {
+    final url = Uri.parse(Settings().getHost() + 'api/loadMessages');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&id=" + id.toString();
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return jsonDecode(body);
+  }
+
+  static Future<String> sendMessege(String token, int id, String message) async {
+    final url = Uri.parse(Settings().getHost() + 'api/sendMessage');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&id=" + id.toString() + "&message=" + message;
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return body;
+  }
+
+  static Future<int> getMessegesLength(String token, int id) async {
+    final url = Uri.parse(Settings().getHost() + 'api/getMessagesSize');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&id=" + id.toString();
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return int.parse(body);
+  }
 }

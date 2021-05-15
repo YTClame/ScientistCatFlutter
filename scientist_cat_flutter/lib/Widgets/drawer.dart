@@ -13,9 +13,10 @@ class DrawerWidget extends StatelessWidget {
 
   Function _loadProfile;
   Function _loadFound;
+  Function _loadContacts;
 
   DrawerWidget(this._isTeacher, this._name, this._photo, this._loadProfile,
-      this._loadFound) {
+      this._loadFound, this._loadContacts) {
     if (_isTeacher)
       _foundButtonText = "Поиск ученика";
     else
@@ -74,7 +75,7 @@ class DrawerWidget extends StatelessWidget {
             title: Text("Мессенджер",
                 style: TextStyle(fontSize: 23.0, fontFamily: "MainFont")),
             onTap: () {
-              log('Клик по мессенджеру');
+              _loadContacts(context);
               Navigator.pop(context);
             },
           ),

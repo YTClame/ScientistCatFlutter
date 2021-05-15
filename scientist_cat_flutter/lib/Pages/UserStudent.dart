@@ -1,13 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:scientist_cat_flutter/Widgets/button.dart';
 import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 import 'package:scientist_cat_flutter/Widgets/mainText.dart';
 
+import '../APIs.dart';
 import '../Settings.dart';
 
 class UserStudent extends StatelessWidget {
   Map<String, dynamic> _userInfo;
+  Function _callback;
 
-  UserStudent(this._userInfo);
+  UserStudent(this._userInfo, this._callback);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +50,23 @@ class UserStudent extends StatelessWidget {
                 ),
                 new MainText("О себе"),
                 new LkSecondText(_userInfo['О себе']),
+                new ButtonWidget("Написать", _writeToUser),
+                new Container(height: 10,),
+                new ButtonWidget("Пожаловаться", (){}),
+                new Container(height: 10,),
               ],
             )),
       ),
     );
   }
+
+  void _writeToUser(BuildContext context){
+    Settings().setTempMessenerUserId(_userInfo['ID']);
+    API.loadMesseges(Settings().getToken(), _userInfo['ID']).then((value) => _openMessenger(context, value));
+  }
+
+  void _openMessenger(BuildContext context, Map<String, dynamic> res){
+    _callback(context, res);
+  }
+
 }

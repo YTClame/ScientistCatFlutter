@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:get_storage/get_storage.dart';
@@ -60,4 +61,13 @@ class Settings {
   void setUserInfo(Map<String, dynamic> userInfo) {
     this._userInfo = userInfo;
   }
+
+  int _tempMessegerUserId;
+  void setTempMessenerUserId(int id){
+    _tempMessegerUserId = id;
+  }
+  int getTempMessengerUserId(){
+    return _tempMessegerUserId;
+  }
+
 }
