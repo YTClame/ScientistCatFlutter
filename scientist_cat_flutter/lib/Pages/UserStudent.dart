@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scientist_cat_flutter/Widgets/button.dart';
 import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 import 'package:scientist_cat_flutter/Widgets/mainText.dart';
+import 'package:toast/toast.dart';
 
 import '../APIs.dart';
 import '../Settings.dart';
@@ -50,7 +51,7 @@ class UserStudent extends StatelessWidget {
                 ),
                 new MainText("О себе"),
                 new LkSecondText(_userInfo['О себе']),
-                new ButtonWidget("Написать", _writeToUser),
+                new ButtonWidget("Написать", _addContact),
                 new Container(height: 10,),
                 new ButtonWidget("Пожаловаться", (){}),
                 new Container(height: 10,),
@@ -60,8 +61,17 @@ class UserStudent extends StatelessWidget {
     );
   }
 
-  void _writeToUser(BuildContext context){
+  void _addContact(BuildContext context){
     Settings().setTempMessenerUserId(_userInfo['ID']);
+    API.createContact(Settings().getToken(), _userInfo['ID']).then((value) => _writeToUser(context, value));
+  }
+
+  void _writeToUser(BuildContext context, String res){
+    if(res == "Error"){
+      Toast.show("Ошибка добавления контакта!", context,
+          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      return;
+    }
     API.loadMesseges(Settings().getToken(), _userInfo['ID']).then((value) => _openMessenger(context, value));
   }
 
