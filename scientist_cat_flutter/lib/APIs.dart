@@ -477,4 +477,53 @@ class API {
     String body = response.body;
     return int.parse(body);
   }
+
+  static Future<List<Map<String, dynamic>>> getRaspForToken(String token) async {
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    Uri url;
+    url = Uri.parse(Settings().getHost() + 'api/getRasp?token=' + token);
+    var response = await get(url, headers: headers);
+    List<Map<String, dynamic>> res = new List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    return res;
+  }
+
+  static Future<String> createRaspElem(String token, String day, String startTime, String endTime, String task) async {
+    final url = Uri.parse(Settings().getHost() + 'api/createRaspElem');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token +
+        "&time1=" + Uri.encodeComponent(startTime).trim() +
+        "&time2=" + Uri.encodeComponent(endTime).trim() +
+        "&task=" + Uri.encodeComponent(task).trim() +
+        "&day=" + Uri.encodeComponent(day).trim();
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return body;
+  }
+
+  static Future<String> removeRaspElem(String token, String day, String startTime, String endTime, String task) async {
+    final url = Uri.parse(Settings().getHost() + 'api/removeRaspElem');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token +
+        "&time1=" + Uri.encodeComponent(startTime).trim() +
+        "&time2=" + Uri.encodeComponent(endTime).trim() +
+        "&task=" + Uri.encodeComponent(task).trim() +
+        "&day=" + Uri.encodeComponent(day).trim();
+
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return body;
+  }
 }

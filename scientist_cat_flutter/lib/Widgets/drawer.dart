@@ -14,9 +14,10 @@ class DrawerWidget extends StatelessWidget {
   Function _loadProfile;
   Function _loadFound;
   Function _loadContacts;
+  Function _openRasp;
 
   DrawerWidget(this._isTeacher, this._name, this._photo, this._loadProfile,
-      this._loadFound, this._loadContacts) {
+      this._loadFound, this._loadContacts, this._openRasp) {
     if (_isTeacher)
       _foundButtonText = "Поиск ученика";
     else
@@ -83,7 +84,7 @@ class DrawerWidget extends StatelessWidget {
             title: Text("Расписание",
                 style: TextStyle(fontSize: 23.0, fontFamily: "MainFont")),
             onTap: () {
-              log('Клик по расписанию');
+              _openRasp(context);
               Navigator.pop(context);
             },
           ),

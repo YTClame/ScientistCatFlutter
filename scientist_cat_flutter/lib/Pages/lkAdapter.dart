@@ -6,6 +6,7 @@ import 'package:scientist_cat_flutter/Pages/LkStudentProfile.dart';
 import 'package:scientist_cat_flutter/Pages/LkTeacherProfile.dart';
 import 'package:scientist_cat_flutter/Pages/UserStudent.dart';
 import 'package:scientist_cat_flutter/Pages/UserTeacher.dart';
+import 'package:scientist_cat_flutter/Pages/addRaspElem.dart';
 import 'package:scientist_cat_flutter/Widgets/drawer.dart';
 
 import '../APIs.dart';
@@ -13,6 +14,8 @@ import '../Settings.dart';
 import 'Contacts.dart';
 import 'FoundStudent.dart';
 import 'Messenger.dart';
+import 'Rasp.dart';
+import 'createRaspElem.dart';
 
 enum TypePage {
   LkTeacher,
@@ -26,7 +29,11 @@ enum TypePage {
   Contacts,
   Messenger,
   SecondMessenger,
-  Rasp
+  Rasp,
+  AddRaspState,
+  AddRaspElem,
+  CreateRaspState,
+  CreateRaspElem,
 }
 
 class LkAdapter extends StatefulWidget {
@@ -78,6 +85,11 @@ class LkAdapterState extends State<LkAdapter> {
     setState(() {});
   }
 
+  void openRasp(BuildContext context) {
+    _setTitleAndMainWidget(TypePage.Rasp);
+    setState(() {});
+  }
+
   void loadContacts(BuildContext context) {
     _setTitleAndMainWidget(TypePage.Contacts);
   }
@@ -93,6 +105,14 @@ class LkAdapterState extends State<LkAdapter> {
 
   void openUserStudent(BuildContext context, Map<String, dynamic> userInfo) {
     _setTitleAndMainWidget(TypePage.UserStudent, context, userInfo);
+  }
+
+  void addRaspElem(BuildContext context, Map<String, dynamic> date) {
+    _setTitleAndMainWidget(TypePage.AddRaspState, context, date);
+  }
+
+  void createRaspElem(BuildContext context, Map<String, dynamic> func) {
+    _setTitleAndMainWidget(TypePage.CreateRaspState, context, func);
   }
 
   void _setTitleAndMainWidget(TypePage tp,
@@ -155,10 +175,35 @@ class LkAdapterState extends State<LkAdapter> {
         break;
       case TypePage.SecondMessenger:
         _title = userInfo['MobileName'];
-        _mainWidget = new Messenger((){}, userInfo['Messages']);
+        _mainWidget = new Messenger(() {}, userInfo['Messages']);
         break;
       case TypePage.Rasp:
         _title = "Расписание";
+        _mainWidget = new Rasp(addRaspElem, createRaspElem);
+        break;
+      case TypePage.AddRaspState:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.AddRaspElem, context, userInfo)),
+        );
+        break;
+      case TypePage.AddRaspElem:
+        _title = userInfo['Дата'];
+        _mainWidget = new AddRaspElem(userInfo['UpdateF'], userInfo['Дата']);
+        break;
+      case TypePage.CreateRaspState:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.CreateRaspElem, context, userInfo)),
+        );
+        break;
+      case TypePage.CreateRaspElem:
+        _title = "Новая дата";
+        _mainWidget = new CreateRaspElem(userInfo['UpdateF']);
         break;
     }
     _isTeacher = Settings().getRole() == "Репетитор" ? true : false;
@@ -173,7 +218,9 @@ class LkAdapterState extends State<LkAdapter> {
   Widget build(BuildContext context) {
     if (this._tp == TypePage.SecondExUserTeacher ||
         this._tp == TypePage.SecondExUserStudent ||
-        this._tp == TypePage.SecondMessenger)
+        this._tp == TypePage.SecondMessenger ||
+        this._tp == TypePage.AddRaspElem ||
+        this._tp == TypePage.CreateRaspElem)
       return new WillPopScope(
         onWillPop: () {
           Navigator.of(context).pop();
@@ -200,12 +247,9 @@ class LkAdapterState extends State<LkAdapter> {
               _userInfo['Фото'],
               openLK,
               openFound,
-              loadContacts),
+              loadContacts,
+              openRasp),
         ),
       );
-  }
-
-  void _closeUserProfile(BuildContext context) {
-    Navigator.pop(context);
   }
 }
