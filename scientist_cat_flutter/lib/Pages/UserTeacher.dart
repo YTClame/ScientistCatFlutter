@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scientist_cat_flutter/Widgets/button.dart';
 import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 import 'package:scientist_cat_flutter/Widgets/mainText.dart';
+import 'package:scientist_cat_flutter/Widgets/userRasp.dart';
 import 'package:toast/toast.dart';
 
 import '../APIs.dart';
@@ -59,6 +60,7 @@ class UserTeacher extends StatelessWidget {
             ),
             new MainText("О себе"),
             new LkSecondText(_userInfo['О себе']),
+            new UserRasp(),
             new ButtonWidget("Написать", _addContact),
             new Container(
               height: 10,

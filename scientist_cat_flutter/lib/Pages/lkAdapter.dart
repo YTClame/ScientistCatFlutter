@@ -16,6 +16,7 @@ import 'FoundStudent.dart';
 import 'Messenger.dart';
 import 'Rasp.dart';
 import 'createRaspElem.dart';
+import 'editRaspElem.dart';
 
 enum TypePage {
   LkTeacher,
@@ -34,6 +35,8 @@ enum TypePage {
   AddRaspElem,
   CreateRaspState,
   CreateRaspElem,
+  EditRaspState,
+  EditRaspElem,
 }
 
 class LkAdapter extends StatefulWidget {
@@ -115,6 +118,10 @@ class LkAdapterState extends State<LkAdapter> {
     _setTitleAndMainWidget(TypePage.CreateRaspState, context, func);
   }
 
+  void editRaspElem(BuildContext context, Map<String, dynamic> data) {
+    _setTitleAndMainWidget(TypePage.EditRaspState, context, data);
+  }
+
   void _setTitleAndMainWidget(TypePage tp,
       [BuildContext context, Map<String, dynamic> userInfo]) {
     switch (tp) {
@@ -179,7 +186,7 @@ class LkAdapterState extends State<LkAdapter> {
         break;
       case TypePage.Rasp:
         _title = "Расписание";
-        _mainWidget = new Rasp(addRaspElem, createRaspElem);
+        _mainWidget = new Rasp(addRaspElem, createRaspElem, editRaspElem);
         break;
       case TypePage.AddRaspState:
         Navigator.push(
@@ -205,6 +212,19 @@ class LkAdapterState extends State<LkAdapter> {
         _title = "Новая дата";
         _mainWidget = new CreateRaspElem(userInfo['UpdateF']);
         break;
+      case TypePage.EditRaspState:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.EditRaspElem, context, userInfo)),
+        );
+        break;
+      case TypePage.EditRaspElem:
+        _title = "Редактировать";
+        _mainWidget = new EditRaspElem(userInfo['UpdateF'], userInfo['Дата'],
+            userInfo['time1'], userInfo['time2'], userInfo['task']);
+        break;
     }
     _isTeacher = Settings().getRole() == "Репетитор" ? true : false;
   }
@@ -220,7 +240,8 @@ class LkAdapterState extends State<LkAdapter> {
         this._tp == TypePage.SecondExUserStudent ||
         this._tp == TypePage.SecondMessenger ||
         this._tp == TypePage.AddRaspElem ||
-        this._tp == TypePage.CreateRaspElem)
+        this._tp == TypePage.CreateRaspElem ||
+        this._tp == TypePage.EditRaspElem)
       return new WillPopScope(
         onWillPop: () {
           Navigator.of(context).pop();

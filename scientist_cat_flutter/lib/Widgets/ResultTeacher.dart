@@ -74,6 +74,7 @@ class ResultTeacher extends StatelessWidget {
   }
 
   void _openPage(BuildContext context, Map<String, dynamic> res){
+    Settings().setTempMessenerUserId(int.parse(_id));
     _callback(context, res);
   }
 

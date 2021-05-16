@@ -8,23 +8,22 @@ import 'package:scientist_cat_flutter/Widgets/raspAddButton.dart';
 
 import '../APIs.dart';
 import '../Settings.dart';
+import 'aditionalRaspUser.dart';
+import 'oneDayRaspUser.dart';
 
-class Rasp extends StatefulWidget {
-  Rasp(Function _lkAdapterCallback, Function _createCallback, Function _editCallback) {
-    _rs = new _RaspState(_lkAdapterCallback, _createCallback, _editCallback);
+class UserRasp extends StatefulWidget {
+  UserRasp() {
+    _rs = new _UserRaspState();
   }
 
-  _RaspState _rs;
+  _UserRaspState _rs;
 
   @override
   createState() => _rs;
 }
 
-class _RaspState extends State<Rasp> {
-  Function _lkAdapterCallback;
-  Function _createCallback;
-  Function _editCallback;
-  _RaspState(this._lkAdapterCallback, this._createCallback, this._editCallback);
+class _UserRaspState extends State<UserRasp> {
+  _UserRaspState();
 
   List<Map<String, dynamic>> _monday = [];
   List<Map<String, dynamic>> _tuesday = [];
@@ -45,7 +44,7 @@ class _RaspState extends State<Rasp> {
 
   void updateRasp(){
     API
-        .getRaspForToken(Settings().getToken())
+        .getRaspForId(Settings().getTempMessengerUserId())
         .then((value) => _parseRasp(value));
   }
 
@@ -98,40 +97,62 @@ class _RaspState extends State<Rasp> {
   }
 
   Widget build(BuildContext context) {
-    return new Container(
-      child: new SingleChildScrollView(
-        child: new Column(
-          children: [
-            MainTextCenter("Расписание по дням недели:"),
-            new OneDayRasp("Понедельник", _monday, addRaspElem, updateRasp, _editCallback),
-            new OneDayRasp("Вторник", _tuesday, addRaspElem, updateRasp, _editCallback),
-            new OneDayRasp("Среда", _wednesday, addRaspElem, updateRasp, _editCallback),
-            new OneDayRasp("Четверг", _thursday, addRaspElem, updateRasp, _editCallback),
-            new OneDayRasp("Пятница", _friday, addRaspElem, updateRasp, _editCallback),
-            new OneDayRasp("Суббота", _saturday, addRaspElem, updateRasp, _editCallback),
-            new OneDayRasp("Воскресенье", _sunday, addRaspElem, updateRasp, _editCallback),
-            new Container(height: 20,),
-            MainTextCenter("Дополнительное расписание по датам:"),
-            new AdditionalRasp(_anotherDayParsed, addRaspElem, updateRasp, _editCallback),
-            new Container(height: 10,),
-            new RaspAddButton("Создать", createRaspElem, "NULL"),
-          ],
-        ),
-      ),
-      constraints: BoxConstraints.expand(),
-    );
-  }
-
-  void addRaspElem(BuildContext context, String dayName){
-    Map<String, dynamic> map = new Map<String, dynamic>();
-    map['Дата'] = dayName;
-    map['UpdateF'] = updateRasp;
-    _lkAdapterCallback(context, map);
-  }
-
-  void createRaspElem(BuildContext context, String _trash){
-    Map<String, dynamic> map = new Map<String, dynamic>();
-    map['UpdateF'] = updateRasp;
-    _createCallback(context, map);
+    if(_monday.length != 0 || _tuesday.length != 0 || _wednesday.length != 0 || _thursday.length != 0 || _friday.length != 0 || _saturday.length != 0 || _sunday.length != 0){
+      if(_anotherDayParsed.isEmpty){
+        return new Container(
+          child: new SingleChildScrollView(
+            child: new Column(
+              children: [
+                MainTextCenter("Расписание по дням недели:"),
+                new OneDayRaspUser("Понедельник", _monday),
+                new OneDayRaspUser("Вторник", _tuesday),
+                new OneDayRaspUser("Среда", _wednesday),
+                new OneDayRaspUser("Четверг", _thursday),
+                new OneDayRaspUser("Пятница", _friday),
+                new OneDayRaspUser("Суббота", _saturday),
+                new OneDayRaspUser("Воскресенье", _sunday),
+              ],
+            ),
+          ),
+        );
+      }
+      else{
+        return new Container(
+          child: new SingleChildScrollView(
+            child: new Column(
+              children: [
+                MainTextCenter("Расписание по дням недели:"),
+                new OneDayRaspUser("Понедельник", _monday),
+                new OneDayRaspUser("Вторник", _tuesday),
+                new OneDayRaspUser("Среда", _wednesday),
+                new OneDayRaspUser("Четверг", _thursday),
+                new OneDayRaspUser("Пятница", _friday),
+                new OneDayRaspUser("Суббота", _saturday),
+                new OneDayRaspUser("Воскресенье", _sunday),
+                new Container(height: 20,),
+                MainTextCenter("Дополнительное расписание по датам:"),
+                new AdditionalRaspUser(_anotherDayParsed),
+              ],
+            ),
+          ),
+        );
+      }
+    }else{
+      if(_anotherDayParsed.isEmpty){
+        return new Container();
+      }
+      else{
+        return new Container(
+          child: new SingleChildScrollView(
+            child: new Column(
+              children: [
+                MainTextCenter("Дополнительное расписание по датам:"),
+                new AdditionalRaspUser(_anotherDayParsed),
+              ],
+            ),
+          ),
+        );
+      }
+    }
   }
 }

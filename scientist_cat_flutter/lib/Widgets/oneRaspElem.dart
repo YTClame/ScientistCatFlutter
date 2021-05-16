@@ -14,9 +14,10 @@ class OneRaspElem extends StatelessWidget {
   final String _day;
 
   Function _updateCallback;
+  Function _editCallback;
 
   OneRaspElem(this._timeStart, this._timeEnd, this._task, this._day,
-      this._updateCallback);
+      this._updateCallback, this._editCallback);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,9 @@ class OneRaspElem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    _editRaspElem(context);
+                  },
                   child: Image.asset(
                     "images/edit.png",
                     width: 27,
@@ -122,5 +125,15 @@ class OneRaspElem extends StatelessWidget {
     else{
       _updateCallback();
     }
+  }
+
+  void _editRaspElem(BuildContext context){
+    Map<String, dynamic> map = new Map<String, dynamic>();
+    map['UpdateF'] = _updateCallback;
+    map['Дата'] = _day;
+    map['time1'] = _timeStart;
+    map['time2'] = _timeEnd;
+    map['task'] = _task;
+    _editCallback(context, map);
   }
 }
