@@ -7,6 +7,7 @@ import 'package:scientist_cat_flutter/Pages/LkTeacherProfile.dart';
 import 'package:scientist_cat_flutter/Pages/UserStudent.dart';
 import 'package:scientist_cat_flutter/Pages/UserTeacher.dart';
 import 'package:scientist_cat_flutter/Pages/addRaspElem.dart';
+import 'package:scientist_cat_flutter/Pages/reportToUser.dart';
 import 'package:scientist_cat_flutter/Widgets/drawer.dart';
 
 import '../APIs.dart';
@@ -37,6 +38,8 @@ enum TypePage {
   CreateRaspElem,
   EditRaspState,
   EditRaspElem,
+  ReportState,
+  ReportElem,
 }
 
 class LkAdapter extends StatefulWidget {
@@ -122,6 +125,10 @@ class LkAdapterState extends State<LkAdapter> {
     _setTitleAndMainWidget(TypePage.EditRaspState, context, data);
   }
 
+  void openReportPage(BuildContext context, Map<String, dynamic> data) {
+    _setTitleAndMainWidget(TypePage.ReportState, context, data);
+  }
+
   void _setTitleAndMainWidget(TypePage tp,
       [BuildContext context, Map<String, dynamic> userInfo]) {
     switch (tp) {
@@ -160,11 +167,11 @@ class LkAdapterState extends State<LkAdapter> {
         break;
       case TypePage.SecondExUserTeacher:
         _title = "Профиль репетитора";
-        _mainWidget = new UserTeacher(userInfo, openMessengerWithUser);
+        _mainWidget = new UserTeacher(userInfo, openMessengerWithUser, openReportPage);
         break;
       case TypePage.SecondExUserStudent:
         _title = "Профиль ученика";
-        _mainWidget = new UserStudent(userInfo, openMessengerWithUser);
+        _mainWidget = new UserStudent(userInfo, openMessengerWithUser, openReportPage);
         break;
       case TypePage.Contacts:
         _title = "Мессенджер";
@@ -225,6 +232,18 @@ class LkAdapterState extends State<LkAdapter> {
         _mainWidget = new EditRaspElem(userInfo['UpdateF'], userInfo['Дата'],
             userInfo['time1'], userInfo['time2'], userInfo['task']);
         break;
+      case TypePage.ReportState:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.ReportElem, context, userInfo)),
+        );
+        break;
+      case TypePage.ReportElem:
+        _title = "Жалоба";
+        _mainWidget = new ReportToUser(userInfo);
+        break;
     }
     _isTeacher = Settings().getRole() == "Репетитор" ? true : false;
   }
@@ -241,7 +260,8 @@ class LkAdapterState extends State<LkAdapter> {
         this._tp == TypePage.SecondMessenger ||
         this._tp == TypePage.AddRaspElem ||
         this._tp == TypePage.CreateRaspElem ||
-        this._tp == TypePage.EditRaspElem)
+        this._tp == TypePage.EditRaspElem ||
+        this._tp == TypePage.ReportElem)
       return new WillPopScope(
         onWillPop: () {
           Navigator.of(context).pop();

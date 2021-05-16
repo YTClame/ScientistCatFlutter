@@ -13,8 +13,9 @@ import '../Settings.dart';
 class UserStudent extends StatelessWidget {
   Map<String, dynamic> _userInfo;
   Function _callback;
+  Function _openReport;
 
-  UserStudent(this._userInfo, this._callback);
+  UserStudent(this._userInfo, this._callback, this._openReport);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class UserStudent extends StatelessWidget {
                 new UserRasp(),
                 new ButtonWidget("Написать", _addContact),
                 new Container(height: 10,),
-                new ButtonWidget("Пожаловаться", (){}),
+                new ButtonWidget("Пожаловаться", _report),
                 new Container(height: 10,),
               ],
             )),
@@ -81,4 +82,10 @@ class UserStudent extends StatelessWidget {
     _callback(context, res);
   }
 
+  void _report(BuildContext context){
+    Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Name'] = _userInfo['Фамилия'] + " " + _userInfo['Имя'];
+    data['ID'] = _userInfo['ID'];
+    _openReport(context, data);
+  }
 }
