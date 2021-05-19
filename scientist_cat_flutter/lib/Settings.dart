@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:get_storage/get_storage.dart';
 
+import 'APIs.dart';
+
 class Settings {
   //One instance, needs factory
   static final Settings _singleton = Settings._internal();
@@ -68,6 +70,22 @@ class Settings {
   }
   int getTempMessengerUserId(){
     return _tempMessegerUserId;
+  }
+
+  bool _isOnlineTimerRunning = false;
+  Timer _timer;
+
+  void runOnlineTimer(){
+    if(!_isOnlineTimerRunning){
+      _isOnlineTimerRunning = true;
+      _timer = new Timer.periodic(
+          new Duration(seconds: 3), (Timer t) => API.updateOnline());
+    }
+  }
+
+  void stopTimer(){
+    _isOnlineTimerRunning = false;
+    _timer.cancel();
   }
 
 }

@@ -49,12 +49,14 @@ void _setInfoAboutUserAndOpenLK(BuildContext context, Map<String, dynamic> info,
     Settings().setRole(role);
     Settings().setUserInfo(info);
     if (role == "Репетитор") {
+      API.updateOnline();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (BuildContext context) => LkAdapter(TypePage.LkTeacher)),
           (Route<dynamic> route) => false);
     } else if (role == "Ученик") {
+      API.updateOnline();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

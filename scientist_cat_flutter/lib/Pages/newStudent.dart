@@ -140,6 +140,7 @@ void clickRegisterButton(BuildContext context) {
 
 void _loadLK(BuildContext context, Map<String, dynamic> info) {
   Settings().setUserInfo(info);
+  API.updateOnline();
   Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(

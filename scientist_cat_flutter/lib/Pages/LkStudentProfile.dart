@@ -13,6 +13,7 @@ class LkStudentProfile extends StatelessWidget {
 
   LkStudentProfile(this._editCallback) {
     _userInfo = Settings().getUserInfo();
+    Settings().runOnlineTimer();
   }
 
   @override

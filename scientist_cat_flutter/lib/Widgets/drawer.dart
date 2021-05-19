@@ -94,6 +94,7 @@ class DrawerWidget extends StatelessWidget {
             title: Text("Выйти",
                 style: TextStyle(fontSize: 23.0, fontFamily: "MainFont")),
             onTap: () {
+              Settings().stopTimer();
               Settings().setRole("");
               Settings().setToken("");
               Settings().setUserInfo(null);

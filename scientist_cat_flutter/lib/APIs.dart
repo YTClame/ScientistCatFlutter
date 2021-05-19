@@ -753,7 +753,8 @@ class API {
     request.fields['birth'] = birth.trim();
     request.fields['stot'] =
         formatLessons.contains("Я к репетитору") ? "1" : "0";
-    request.fields['ttos'] = formatLessons.contains("Репетитор ко мне") ? "1" : "0";
+    request.fields['ttos'] =
+        formatLessons.contains("Репетитор ко мне") ? "1" : "0";
     request.fields['dist'] = formatLessons.contains("Дистанционно") ? "1" : "0";
     request.fields['sex'] = sex == "Мужской" ? "m" : "w";
     request.fields['phone'] = telephone.trim();
@@ -777,5 +778,15 @@ class API {
     var res = await request.send();
     var response = await Response.fromStream(res);
     return response.body;
+  }
+
+  static void updateOnline() async {
+    final url = Uri.parse(Settings().getHost() + 'api/wasOnline');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + Settings().getToken();
+
+    Response response = await post(url, headers: headers, body: data);
   }
 }
