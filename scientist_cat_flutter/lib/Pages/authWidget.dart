@@ -22,6 +22,14 @@ void clickEnterButton(BuildContext context) {
 void handlerLoginRes(Map<String, dynamic> map, BuildContext context) {
   String token;
   String role;
+  if(map["Доступ"] == "Закрыт"){
+    Toast.show("Пользователь заблокирован!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    Settings().setToken("");
+    Settings().setRole("");
+    Settings().setUserInfo(null);
+    return;
+  }
   if (map['Токен'] != 'Error') {
     token = map['Токен'];
     role = map['Роль'];
@@ -49,19 +57,37 @@ void _setInfoAboutUserAndOpenLK(BuildContext context, Map<String, dynamic> info,
     Settings().setRole(role);
     Settings().setUserInfo(info);
     if (role == "Репетитор") {
-      API.updateOnline();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => LkAdapter(TypePage.LkTeacher)),
-          (Route<dynamic> route) => false);
+      if(info["Доступ"] == "Открыт"){
+        API.updateOnline();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => LkAdapter(TypePage.LkTeacher)),
+                (Route<dynamic> route) => false);
+      }
+      else{
+        Toast.show("Пользователь заблокирован!", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+        Settings().setToken("");
+        Settings().setRole("");
+        Settings().setUserInfo(null);
+      }
     } else if (role == "Ученик") {
-      API.updateOnline();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => LkAdapter(TypePage.LkStudent)),
-          (Route<dynamic> route) => false);
+      if(info["Доступ"] == "Открыт"){
+        API.updateOnline();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => LkAdapter(TypePage.LkStudent)),
+                (Route<dynamic> route) => false);
+      }
+      else{
+        Toast.show("Пользователь заблокирован!", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+        Settings().setToken("");
+        Settings().setRole("");
+        Settings().setUserInfo(null);
+      }
     }
   }
 }

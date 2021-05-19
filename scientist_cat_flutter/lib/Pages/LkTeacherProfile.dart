@@ -6,18 +6,38 @@ import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 import 'package:scientist_cat_flutter/Widgets/mainText.dart';
 
 import '../Settings.dart';
+import 'authWidget.dart';
 
 class LkTeacherProfile extends StatelessWidget {
   Map<String, dynamic> _userInfo;
   Function _editCallback;
+  BuildContext __context;
 
   LkTeacherProfile(this._editCallback) {
     _userInfo = Settings().getUserInfo();
-    Settings().runOnlineTimer();
+    if(_userInfo["Доступ"] == "Открыт")
+      Settings().runOnlineTimer();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _exitIfBlocked();
+    });
+  }
+
+  void _exitIfBlocked(){
+    if(_userInfo["Доступ"] == "Закрыт"){
+      Settings().setRole("");
+      Settings().setToken("");
+      Settings().setUserInfo(null);
+      Navigator.pushAndRemoveUntil(
+          __context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => AuthWidget()),
+              (Route<dynamic> route) => false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    __context = context;
     return new Container(
       child: SingleChildScrollView(
         child: new Center(
