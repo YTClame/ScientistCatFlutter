@@ -7,7 +7,9 @@ import 'package:scientist_cat_flutter/Pages/LkTeacherProfile.dart';
 import 'package:scientist_cat_flutter/Pages/UserStudent.dart';
 import 'package:scientist_cat_flutter/Pages/UserTeacher.dart';
 import 'package:scientist_cat_flutter/Pages/addRaspElem.dart';
+import 'package:scientist_cat_flutter/Pages/authWidget.dart';
 import 'package:scientist_cat_flutter/Pages/reportToUser.dart';
+import 'package:scientist_cat_flutter/Widgets/choosePhoto.dart';
 import 'package:scientist_cat_flutter/Widgets/drawer.dart';
 
 import '../APIs.dart';
@@ -18,10 +20,14 @@ import 'Messenger.dart';
 import 'Rasp.dart';
 import 'createRaspElem.dart';
 import 'editRaspElem.dart';
+import 'editStudent.dart';
+import 'editTeacher.dart';
 
 enum TypePage {
   LkTeacher,
+  EditTeacher,
   LkStudent,
+  EditStudent,
   FoundTeacher,
   FoundStudent,
   UserTeacher,
@@ -40,6 +46,8 @@ enum TypePage {
   EditRaspElem,
   ReportState,
   ReportElem,
+  ChoosePhotoState,
+  ChoosePhotoElem,
 }
 
 class LkAdapter extends StatefulWidget {
@@ -76,10 +84,47 @@ class LkAdapterState extends State<LkAdapter> {
   }
 
   void openLK(BuildContext context) {
+    API
+        .getInfoAboutUserForToken(Settings().getToken(), Settings().getRole())
+        .then((value) => _continueOpenLK(context, value));
+  }
+
+  void _continueOpenLK(BuildContext context, Map<String, dynamic> res) {
+    if (res['Статус'] == "Успех") {
+      Settings().setUserInfo(res);
+      if (Settings().getRole() == "Репетитор")
+        _setTitleAndMainWidget(TypePage.LkTeacher);
+      else
+        _setTitleAndMainWidget(TypePage.LkStudent);
+      setState(() {});
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => new AuthWidget()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
+  void openEdit(BuildContext context) {
+    if (Settings().getRole() == "Репетитор") {
+      API
+          .getInfoAboutUserForToken(Settings().getToken(), "Репетитор")
+          .then((value) => {_continueOpenEdit(value)});
+    }
+    if (Settings().getRole() == "Ученик") {
+      API
+          .getInfoAboutUserForToken(Settings().getToken(), "Ученик")
+          .then((value) => {_continueOpenEdit(value)});
+    }
+  }
+
+  void _continueOpenEdit(Map<String, dynamic> res) {
+    Settings().setUserInfo(res);
     if (Settings().getRole() == "Репетитор")
-      _setTitleAndMainWidget(TypePage.LkTeacher);
+      _setTitleAndMainWidget(TypePage.EditTeacher);
     else
-      _setTitleAndMainWidget(TypePage.LkStudent);
+      _setTitleAndMainWidget(TypePage.EditStudent);
     setState(() {});
   }
 
@@ -129,16 +174,28 @@ class LkAdapterState extends State<LkAdapter> {
     _setTitleAndMainWidget(TypePage.ReportState, context, data);
   }
 
+  void openChoosePhoto(BuildContext context, Map<String, dynamic> data) {
+    _setTitleAndMainWidget(TypePage.ChoosePhotoState, context, data);
+  }
+
   void _setTitleAndMainWidget(TypePage tp,
       [BuildContext context, Map<String, dynamic> userInfo]) {
     switch (tp) {
       case TypePage.LkTeacher:
         _title = "Профиль";
-        _mainWidget = new LkTeacherProfile();
+        _mainWidget = new LkTeacherProfile(openEdit);
+        break;
+      case TypePage.EditTeacher:
+        _title = "Редактирование";
+        _mainWidget = new EditTeacher(openChoosePhoto, openLK);
         break;
       case TypePage.LkStudent:
         _title = "Профиль";
-        _mainWidget = new LkStudentProfile();
+        _mainWidget = new LkStudentProfile(openEdit);
+        break;
+      case TypePage.EditStudent:
+        _title = "Редактирование";
+        _mainWidget = new EditStudent(openChoosePhoto, openLK);
         break;
       case TypePage.FoundTeacher:
         _title = "Поиск ученика";
@@ -167,11 +224,13 @@ class LkAdapterState extends State<LkAdapter> {
         break;
       case TypePage.SecondExUserTeacher:
         _title = "Профиль репетитора";
-        _mainWidget = new UserTeacher(userInfo, openMessengerWithUser, openReportPage);
+        _mainWidget =
+            new UserTeacher(userInfo, openMessengerWithUser, openReportPage);
         break;
       case TypePage.SecondExUserStudent:
         _title = "Профиль ученика";
-        _mainWidget = new UserStudent(userInfo, openMessengerWithUser, openReportPage);
+        _mainWidget =
+            new UserStudent(userInfo, openMessengerWithUser, openReportPage);
         break;
       case TypePage.Contacts:
         _title = "Мессенджер";
@@ -244,6 +303,18 @@ class LkAdapterState extends State<LkAdapter> {
         _title = "Жалоба";
         _mainWidget = new ReportToUser(userInfo);
         break;
+      case TypePage.ChoosePhotoState:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.ChoosePhotoElem, context, userInfo)),
+        );
+        break;
+      case TypePage.ChoosePhotoElem:
+        _title = "Выбрать фото";
+        _mainWidget = new ChoosePhoto(userInfo);
+        break;
     }
     _isTeacher = Settings().getRole() == "Репетитор" ? true : false;
   }
@@ -261,7 +332,8 @@ class LkAdapterState extends State<LkAdapter> {
         this._tp == TypePage.AddRaspElem ||
         this._tp == TypePage.CreateRaspElem ||
         this._tp == TypePage.EditRaspElem ||
-        this._tp == TypePage.ReportElem)
+        this._tp == TypePage.ReportElem ||
+        this._tp == TypePage.ChoosePhotoElem)
       return new WillPopScope(
         onWillPop: () {
           Navigator.of(context).pop();
@@ -282,14 +354,8 @@ class LkAdapterState extends State<LkAdapter> {
             child: Center(child: _mainWidget),
             color: Color.fromRGBO(198, 224, 255, 1.0),
           ),
-          drawer: new DrawerWidget(
-              _isTeacher,
-              _userInfo['Фамилия'] + " " + _userInfo['Имя'],
-              _userInfo['Фото'],
-              openLK,
-              openFound,
-              loadContacts,
-              openRasp),
+          drawer: new DrawerWidget(_isTeacher, _userInfo['Фото'], openLK,
+              openFound, loadContacts, openRasp),
         ),
       );
   }

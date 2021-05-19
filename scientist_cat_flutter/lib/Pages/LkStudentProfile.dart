@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:scientist_cat_flutter/Widgets/button.dart';
 import 'package:scientist_cat_flutter/Widgets/lkSecondText.dart';
 import 'package:scientist_cat_flutter/Widgets/mainText.dart';
 
@@ -6,8 +9,9 @@ import '../Settings.dart';
 
 class LkStudentProfile extends StatelessWidget {
   Map<String, dynamic> _userInfo;
+  Function _editCallback;
 
-  LkStudentProfile() {
+  LkStudentProfile(this._editCallback) {
     _userInfo = Settings().getUserInfo();
   }
 
@@ -19,7 +23,7 @@ class LkStudentProfile extends StatelessWidget {
             child: new Column(
           children: [
             Image.network(
-                Settings().getHost() + _userInfo['Фото'].substring(1)),
+                Settings().getHost() + _userInfo['Фото'].substring(1) + "#" + Random().nextInt(100000).toString()),
             new Container(height: 10),
             new MainText("Фамилия"),
             new LkSecondText(_userInfo['Фамилия']),
@@ -47,6 +51,8 @@ class LkStudentProfile extends StatelessWidget {
             ),
             new MainText("О себе"),
             new LkSecondText(_userInfo['О себе']),
+            new ButtonWidget("Редактировать", _editCallback),
+            new Container(height: 10),
           ],
         )),
       ),

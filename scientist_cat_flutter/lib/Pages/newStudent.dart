@@ -83,9 +83,9 @@ void lessonsChanged(BuildContext context, List<String> lessons){
 void clickRegisterButton(BuildContext context) {
   String stotRes = "0", ttosRes = "0", distantRes = "0";
   for(String s in _formatLessons){
-    if(s == "Преподаватель ко мне")
+    if(s == "Репетитор ко мне")
       ttosRes = "1";
-    if(s == "Я к преподавателю")
+    if(s == "Я к репетитору")
       stotRes = "1";
     if(s == "Дистанционно")
       distantRes = "1";

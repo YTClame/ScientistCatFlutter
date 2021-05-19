@@ -95,7 +95,7 @@ class _StudentFilterState extends State<StudentFilter> {
     res['eng'] = _lessons.contains("Английский язык") ? "1" : "0";
     res['nem'] = _lessons.contains("Немецкий язык") ? "1" : "0";
     res['token'] = Settings().getToken();
-    _callback(context, res);
+    _callback(res);
     _hideFilterClick(context);
   }
 

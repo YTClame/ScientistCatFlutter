@@ -25,16 +25,16 @@ class _CheckBoxesFormatLessonsForStudentState
 
   _CheckBoxesFormatLessonsForStudentState(this._callback, [List<String> values]){
     if(values != null){
-      _ttos = values.contains("Преподаватель ко мне") ? true : false;
-      _stot = values.contains("Я к преподавателю") ? true : false;
+      _ttos = values.contains("Репетитор ко мне") ? true : false;
+      _stot = values.contains("Я к репетитору") ? true : false;
       _distant = values.contains("Дистанционно") ? true : false;
     }
   }
 
   Widget build(BuildContext context) {
     List<String> formats = [];
-    if (_stot) formats.add("Я к преподавателю");
-    if (_ttos) formats.add("Преподаватель ко мне");
+    if (_stot) formats.add("Я к репетитору");
+    if (_ttos) formats.add("Репетитор ко мне");
     if (_distant) formats.add("Дистанционно");
     _callback(context, formats);
     return new Container(
@@ -42,7 +42,7 @@ class _CheckBoxesFormatLessonsForStudentState
         children: <Widget>[
           CheckboxListTile(
             title: Text(
-              "Я к преподавателю",
+              "Я к репетитору",
               style: new TextStyle(
                 fontFamily: 'InputFont',
                 fontSize: 22,
@@ -59,7 +59,7 @@ class _CheckBoxesFormatLessonsForStudentState
           ),
           CheckboxListTile(
             title: Text(
-              "Преподаватель ко мне",
+              "Репетитор ко мне",
               style: new TextStyle(
                 fontFamily: 'InputFont',
                 fontSize: 22,

@@ -64,6 +64,10 @@ void _tryLogin(String host) {
       runApp(errorWidget);
     }).then((value) => {_loadAuth(value)});
   } else {
+    API.getCities().catchError((e) {
+      _er = _ErrorType.BadServer;
+      runApp(errorWidget);
+    }).then((value) => {_setCities(value)});
     if (Settings().getRole() == "Репетитор") {
       API.getInfoAboutUserForToken(token, "Репетитор").catchError((e) {
         _er = _ErrorType.BadServer;
@@ -80,9 +84,14 @@ void _tryLogin(String host) {
   }
 }
 
-void _loadAuth(List<String> cities) {
+void _setCities(List<String> cities){
   if(_er == _ErrorType.BadServer) return;
   Settings().setCities(cities);
+}
+
+void _loadAuth(List<String> cities) {
+  if(_er == _ErrorType.BadServer) return;
+  _setCities(cities);
   runApp(new AuthWidget());
 }
 

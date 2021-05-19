@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:scientist_cat_flutter/Pages/authWidget.dart';
@@ -8,7 +9,6 @@ import '../Settings.dart';
 class DrawerWidget extends StatelessWidget {
   final bool _isTeacher;
   String _foundButtonText;
-  String _name;
   String _photo;
 
   Function _loadProfile;
@@ -16,7 +16,7 @@ class DrawerWidget extends StatelessWidget {
   Function _loadContacts;
   Function _openRasp;
 
-  DrawerWidget(this._isTeacher, this._name, this._photo, this._loadProfile,
+  DrawerWidget(this._isTeacher, this._photo, this._loadProfile,
       this._loadFound, this._loadContacts, this._openRasp) {
     if (_isTeacher)
       _foundButtonText = "Поиск ученика";
@@ -26,6 +26,8 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> _info = Settings().getUserInfo();
+    String _name = _info['Фамилия'] + " " + _info['Имя'];
     return new Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -37,7 +39,7 @@ class DrawerWidget extends StatelessWidget {
                   border: new Border.all(color: Colors.black),
                 ),
                 child: Image.network(
-                  Settings().getHost() + _photo.substring(1),
+                  Settings().getHost() + _photo.substring(1) + "#" + Random().nextInt(100000).toString(),
                   height: 100,
                 ),
               ),

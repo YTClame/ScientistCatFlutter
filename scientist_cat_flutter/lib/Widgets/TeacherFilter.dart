@@ -84,8 +84,8 @@ class _TeacherFilterState extends State<TeacherFilter> {
 
   void setFilter(BuildContext context) {
     Map<String, dynamic> res = new Map();
-    res['stot'] = _formatLessons.contains("Я к преподавателю") ? "1" : "0";
-    res['ttos'] = _formatLessons.contains("Преподаватель ко мне") ? "1" : "0";
+    res['stot'] = _formatLessons.contains("Я к репетитору") ? "1" : "0";
+    res['ttos'] = _formatLessons.contains("Репетитор ко мне") ? "1" : "0";
     res['dist'] = _formatLessons.contains("Дистанционно") ? "1" : "0";
     if (_sex == "Мужской")
       res['sex'] = "m";
@@ -114,7 +114,7 @@ class _TeacherFilterState extends State<TeacherFilter> {
     res['edT'] = _education.contains("Учитель") ? "1" : "0";
     res['edP'] = _education.contains("Преподаватель") ? "1" : "0";
     res['token'] = Settings().getToken();
-    _callback(context, res);
+    _callback(res);
     _hideFilterClick(context);
   }
 
