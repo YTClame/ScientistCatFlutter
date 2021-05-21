@@ -436,7 +436,9 @@ class API {
     url = Uri.parse(
         Settings().getHost() + 'api/getInformationAboutTeacher?id=' + id);
     var response = await get(url, headers: headers);
-    return jsonDecode(response.body);
+    Map<String, dynamic> res = jsonDecode(response.body);
+    res["Роль"] = "Репетитор";
+    return res;
   }
 
   static Future<Map<String, dynamic>> loadInfoAboutStudent(String id) async {
@@ -447,7 +449,9 @@ class API {
     url = Uri.parse(
         Settings().getHost() + 'api/getInformationAboutStudent?id=' + id);
     var response = await get(url, headers: headers);
-    return jsonDecode(response.body);
+    Map<String, dynamic> res = jsonDecode(response.body);
+    res["Роль"] = "Ученик";
+    return res;
   }
 
   static Future<List<Map<String, dynamic>>> getContacts(String token) async {
@@ -788,5 +792,77 @@ class API {
     String data = "token=" + Settings().getToken();
 
     Response response = await post(url, headers: headers, body: data);
+  }
+
+  static Future<List<Map<String, dynamic>>> getReports(String token) async {
+    final url = Uri.parse(Settings().getHost() + 'api/loadReports');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token;
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    List<Map<String, dynamic>> res =
+        new List<Map<String, dynamic>>.from(jsonDecode(body));
+    return res;
+  }
+
+  static Future<String> blockUser(String token, int id) async {
+    final url = Uri.parse(Settings().getHost() + 'api/blockUser');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&id=" + id.toString();
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return body;
+  }
+
+  static Future<String> unblockUser(String token, int id) async {
+    final url = Uri.parse(Settings().getHost() + 'api/unblockUser');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&id=" + id.toString();
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    return body;
+  }
+
+  static Future<List<Map<String, dynamic>>> loadMesAW(String token, int badId, int goodId) async {
+    final url = Uri.parse(Settings().getHost() + 'api/loadMessagesToIds');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&f=" + goodId.toString() + "&s=" + badId.toString();
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    String body = response.body;
+    List<Map<String, dynamic>> res = new List<Map<String, dynamic>>.from(jsonDecode(body));
+    return res;
+  }
+
+  static Future<String> removeReportAW(String token, int id) async {
+    final url = Uri.parse(Settings().getHost() + 'api/deleteReport');
+    Map<String, String> headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+    String data = "token=" + token + "&id=" + id.toString();
+    Response response = await post(url,
+        headers: headers, body: data); // check the status code for the result
+    int statusCode = response
+        .statusCode; // this API passes back the id of the new item added to the body
+    return response.body;
   }
 }

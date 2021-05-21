@@ -6,9 +6,12 @@ import 'package:scientist_cat_flutter/Pages/LkStudentProfile.dart';
 import 'package:scientist_cat_flutter/Pages/LkTeacherProfile.dart';
 import 'package:scientist_cat_flutter/Pages/UserStudent.dart';
 import 'package:scientist_cat_flutter/Pages/UserTeacher.dart';
+import 'package:scientist_cat_flutter/Pages/UserTeacherAW.dart';
 import 'package:scientist_cat_flutter/Pages/addRaspElem.dart';
+import 'package:scientist_cat_flutter/Pages/adminReports.dart';
 import 'package:scientist_cat_flutter/Pages/authWidget.dart';
 import 'package:scientist_cat_flutter/Pages/reportToUser.dart';
+import 'package:scientist_cat_flutter/Widgets/adminDrawer.dart';
 import 'package:scientist_cat_flutter/Widgets/choosePhoto.dart';
 import 'package:scientist_cat_flutter/Widgets/drawer.dart';
 
@@ -17,7 +20,9 @@ import '../Settings.dart';
 import 'Contacts.dart';
 import 'FoundStudent.dart';
 import 'Messenger.dart';
+import 'MessengerAW.dart';
 import 'Rasp.dart';
+import 'UserStudentAW.dart';
 import 'createRaspElem.dart';
 import 'editRaspElem.dart';
 import 'editStudent.dart';
@@ -48,6 +53,13 @@ enum TypePage {
   ReportElem,
   ChoosePhotoState,
   ChoosePhotoElem,
+  AdminReports,
+  UserStudentAW_State,
+  UserTeacherAW_State,
+  UserStudentAW_Elem,
+  UserTeacherAW_Elem,
+  MessengerAW_State,
+  MessengerAW_Elem,
 }
 
 class LkAdapter extends StatefulWidget {
@@ -176,6 +188,17 @@ class LkAdapterState extends State<LkAdapter> {
 
   void openChoosePhoto(BuildContext context, Map<String, dynamic> data) {
     _setTitleAndMainWidget(TypePage.ChoosePhotoState, context, data);
+  }
+
+  void openUserPageAW(BuildContext context, Map<String, dynamic> data) {
+    if (data['Роль'] == "Ученик")
+      _setTitleAndMainWidget(TypePage.UserStudentAW_State, context, data);
+    else if (data["Роль"] == "Репетитор")
+      _setTitleAndMainWidget(TypePage.UserTeacherAW_State, context, data);
+  }
+
+  void openMessengerAW(BuildContext context, Map<String, dynamic> data) {
+    _setTitleAndMainWidget(TypePage.MessengerAW_State, context, data);
   }
 
   void _setTitleAndMainWidget(TypePage tp,
@@ -315,6 +338,46 @@ class LkAdapterState extends State<LkAdapter> {
         _title = "Выбрать фото";
         _mainWidget = new ChoosePhoto(userInfo);
         break;
+      case TypePage.AdminReports:
+        _title = "Жалобы";
+        _mainWidget = new AdminReports(openUserPageAW, openMessengerAW);
+        break;
+      case TypePage.UserTeacherAW_State:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => new LkAdapter(
+                  TypePage.UserTeacherAW_Elem, context, userInfo)),
+        );
+        break;
+      case TypePage.UserTeacherAW_Elem:
+        _title = "Профиль";
+        _mainWidget = new UserTeacherAW(userInfo, () {});
+        break;
+      case TypePage.UserStudentAW_State:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => new LkAdapter(
+                  TypePage.UserStudentAW_Elem, context, userInfo)),
+        );
+        break;
+      case TypePage.UserStudentAW_Elem:
+        _title = "Профиль";
+        _mainWidget = new UserStudentAW(userInfo, () {});
+        break;
+      case TypePage.MessengerAW_State:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  new LkAdapter(TypePage.MessengerAW_Elem, context, userInfo)),
+        );
+        break;
+      case TypePage.MessengerAW_Elem:
+        _title = "Переписка";
+        _mainWidget = new MessengerAW(userInfo['mes'], userInfo['badID']);
+        break;
     }
     _isTeacher = Settings().getRole() == "Репетитор" ? true : false;
   }
@@ -333,7 +396,10 @@ class LkAdapterState extends State<LkAdapter> {
         this._tp == TypePage.CreateRaspElem ||
         this._tp == TypePage.EditRaspElem ||
         this._tp == TypePage.ReportElem ||
-        this._tp == TypePage.ChoosePhotoElem)
+        this._tp == TypePage.ChoosePhotoElem ||
+        this._tp == TypePage.UserTeacherAW_Elem ||
+        this._tp == TypePage.UserStudentAW_Elem ||
+        this._tp == TypePage.MessengerAW_Elem)
       return new WillPopScope(
         onWillPop: () {
           Navigator.of(context).pop();
@@ -346,7 +412,13 @@ class LkAdapterState extends State<LkAdapter> {
           ),
         ),
       );
-    else
+    else {
+      Widget _drawer;
+      if (Settings().getRole() != "Админ")
+        _drawer = new DrawerWidget(_isTeacher, _userInfo['Фото'], openLK,
+            openFound, loadContacts, openRasp);
+      else
+        _drawer = new AdminDrawer();
       return new MaterialApp(
         home: Scaffold(
           appBar: AppBar(title: Text(_title)),
@@ -354,9 +426,9 @@ class LkAdapterState extends State<LkAdapter> {
             child: Center(child: _mainWidget),
             color: Color.fromRGBO(198, 224, 255, 1.0),
           ),
-          drawer: new DrawerWidget(_isTeacher, _userInfo['Фото'], openLK,
-              openFound, loadContacts, openRasp),
+          drawer: _drawer,
         ),
       );
+    }
   }
 }

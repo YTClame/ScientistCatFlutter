@@ -16,8 +16,8 @@ class DrawerWidget extends StatelessWidget {
   Function _loadContacts;
   Function _openRasp;
 
-  DrawerWidget(this._isTeacher, this._photo, this._loadProfile,
-      this._loadFound, this._loadContacts, this._openRasp) {
+  DrawerWidget(this._isTeacher, this._photo, this._loadProfile, this._loadFound,
+      this._loadContacts, this._openRasp) {
     if (_isTeacher)
       _foundButtonText = "Поиск ученика";
     else
@@ -39,7 +39,10 @@ class DrawerWidget extends StatelessWidget {
                   border: new Border.all(color: Colors.black),
                 ),
                 child: Image.network(
-                  Settings().getHost() + _photo.substring(1) + "#" + Random().nextInt(100000).toString(),
+                  Settings().getHost() +
+                      _photo.substring(1) +
+                      "#" +
+                      Random().nextInt(100000).toString(),
                   height: 100,
                 ),
               ),

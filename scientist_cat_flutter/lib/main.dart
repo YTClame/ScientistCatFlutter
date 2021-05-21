@@ -81,6 +81,13 @@ void _tryLogin(String host) {
         runApp(errorWidget);
       }).then((value) => {_setInfoAboutUserAndOpenLK(value, token, "Ученик")});
     }
+    if (Settings().getRole() == "Админ") {
+      Map<String, dynamic> res = new Map<String, dynamic>();
+      res['Статус'] = "Успех";
+      res['Токен'] = token;
+      res['Роль'] = "Админ";
+      _setInfoAboutUserAndOpenLK(res, token, "Админ");
+    }
   }
 }
 
@@ -108,6 +115,9 @@ void _setInfoAboutUserAndOpenLK(
       runApp(new LkAdapter(TypePage.LkTeacher));
     } else if (role == "Ученик") {
       runApp(new LkAdapter(TypePage.LkStudent));
+    }else if (role == "Админ") {
+      runApp(new LkAdapter(TypePage.AdminReports));
     }
+
   }
 }

@@ -22,7 +22,7 @@ void clickEnterButton(BuildContext context) {
 void handlerLoginRes(Map<String, dynamic> map, BuildContext context) {
   String token;
   String role;
-  if(map["Доступ"] == "Закрыт"){
+  if (map["Доступ"] == "Закрыт") {
     Toast.show("Пользователь заблокирован!", context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     Settings().setToken("");
@@ -41,6 +41,9 @@ void handlerLoginRes(Map<String, dynamic> map, BuildContext context) {
       API.getInfoAboutUserForToken(token, role).then(
           (value) => {_setInfoAboutUserAndOpenLK(context, value, token, role)});
     }
+    if (role == "Админ"){
+      _setInfoAboutUserAndOpenLK(context, map, token, role);
+    }
   } else {
     Toast.show("Ошибка авторизации!", context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
@@ -57,15 +60,15 @@ void _setInfoAboutUserAndOpenLK(BuildContext context, Map<String, dynamic> info,
     Settings().setRole(role);
     Settings().setUserInfo(info);
     if (role == "Репетитор") {
-      if(info["Доступ"] == "Открыт"){
+      if (info["Доступ"] == "Открыт") {
         API.updateOnline();
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => LkAdapter(TypePage.LkTeacher)),
-                (Route<dynamic> route) => false);
-      }
-      else{
+                builder: (BuildContext context) =>
+                    LkAdapter(TypePage.LkTeacher)),
+            (Route<dynamic> route) => false);
+      } else {
         Toast.show("Пользователь заблокирован!", context,
             duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         Settings().setToken("");
@@ -73,21 +76,27 @@ void _setInfoAboutUserAndOpenLK(BuildContext context, Map<String, dynamic> info,
         Settings().setUserInfo(null);
       }
     } else if (role == "Ученик") {
-      if(info["Доступ"] == "Открыт"){
+      if (info["Доступ"] == "Открыт") {
         API.updateOnline();
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (BuildContext context) => LkAdapter(TypePage.LkStudent)),
-                (Route<dynamic> route) => false);
-      }
-      else{
+                builder: (BuildContext context) =>
+                    LkAdapter(TypePage.LkStudent)),
+            (Route<dynamic> route) => false);
+      } else {
         Toast.show("Пользователь заблокирован!", context,
             duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         Settings().setToken("");
         Settings().setRole("");
         Settings().setUserInfo(null);
       }
+    } else if (role == "Админ") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => LkAdapter(TypePage.AdminReports)),
+          (Route<dynamic> route) => false);
     }
   }
 }
