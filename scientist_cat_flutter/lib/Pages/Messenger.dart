@@ -146,6 +146,11 @@ class _MessengerState extends State<Messenger> {
   String _mesSended = "";
 
   void _sendMessage(BuildContext bContext) {
+    if(_message.trim().isEmpty){
+      Toast.show("Введите сообщение!", bContext,
+          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      return;
+    }
     _mesSended = _message;
     API
         .sendMessege(Settings().getToken(), Settings().getTempMessengerUserId(),

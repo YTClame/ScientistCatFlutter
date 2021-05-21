@@ -26,6 +26,11 @@ void textChangedMessage(BuildContext context, String text) {
 }
 
 void clickAddButton(BuildContext context) {
+  if(_message.trim().isEmpty){
+    Toast.show("Введите жалобу!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
   API.sendReport(_data['ID'], _message).then((value) => _continueReport(context, value));
 }
 

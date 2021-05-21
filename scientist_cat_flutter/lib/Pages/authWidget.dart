@@ -16,6 +16,11 @@ import 'newTeacher.dart';
 
 //Каллбеки на кнопки:
 void clickEnterButton(BuildContext context) {
+  if(login.trim().length == 0 || password.trim().length == 0){
+    Toast.show("Для авторизации необходимо заполнить оба поля!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
   API.login(login, password).then((value) => {handlerLoginRes(value, context)});
 }
 

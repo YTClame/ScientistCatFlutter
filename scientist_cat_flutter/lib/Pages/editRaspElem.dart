@@ -45,6 +45,11 @@ void clickAddButton(BuildContext context) {
     Navigator.pop(context);
     return;
   }
+  if(_thisDate.trim().length == 0 ||_timeStart.trim().length == 0||_timeEnd.trim().length == 0||_task.trim().length == 0){
+    Toast.show("Заполните все поля в удобном для вас формате!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
   API.editRaspElem(Settings().getToken(), _thisDate, _timeStartOld, _timeEndOld, _taskOld, _timeStart, _timeEnd, _task).then((value) => _continueEdit(context, value));
 }
 

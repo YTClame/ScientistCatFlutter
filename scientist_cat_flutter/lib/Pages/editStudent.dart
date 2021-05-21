@@ -83,6 +83,68 @@ void aboutChanged(BuildContext context, String text) {
 }
 
 void clickRegisterButton(BuildContext context) {
+  if(_secondName.trim() == ""){
+    Toast.show("Введите фамилию!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_firstName.trim() == ""){
+    Toast.show("Введите имя!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  List<String> birthParts = _birthday.trim().split(".");
+  if(birthParts.length != 3){
+    Toast.show("Введите корректную дату рождения!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+  int day = 0, mounth = 0, year = 0;
+  try{
+    day = int.parse(birthParts[0]);
+    mounth = int.parse(birthParts[1]);
+    year = int.parse(birthParts[2]);
+    if (day < 1 || day > 31 || mounth < 1 || mounth > 12 || year < 1920 || year > 2010) throw new Exception();
+  }
+  catch(e){
+    Toast.show("Введите корректную дату рождения!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_phone.trim().length != 12 || _phone.trim()[0] != "+" || _phone.trim()[1] != "7"){
+    Toast.show("Введите корректный номер телефона +7**********!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  List emailParts = _email.trim().split("@");
+  if(emailParts.length != 2 || _email.contains(" ")){
+    Toast.show("Введите корректный email!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+  emailParts = emailParts[1].split(".");
+  if(emailParts.length < 2){
+    Toast.show("Введите корректный email!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_formatLessons.isEmpty){
+    Toast.show("Выберите хотя бы один формат занятий!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_lessons.isEmpty){
+    Toast.show("Выберите хотя бы один изучаемый предмет!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
   API
       .editStudent(
           _image,

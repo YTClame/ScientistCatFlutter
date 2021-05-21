@@ -41,6 +41,11 @@ void textChangedTask(BuildContext context, String text) {
 }
 
 void clickAddButton(BuildContext context) {
+  if(_date.trim().length == 0 ||_timeStart.trim().length == 0||_timeEnd.trim().length == 0||_task.trim().length == 0){
+    Toast.show("Заполните все поля в удобном для вас формате!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
   API.createRaspElem(Settings().getToken(), _date, _timeStart, _timeEnd, _task).then((value) => _continueCreating(context, value));
 }
 

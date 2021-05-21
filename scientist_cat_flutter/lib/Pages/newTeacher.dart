@@ -99,6 +99,13 @@ void clickRegisterButton(BuildContext context) {
     if (s == "Ученик ко мне") stotRes = "1";
     if (s == "Дистанционно") distantRes = "1";
   }
+
+  if(ttosRes == "0" && stotRes == "0" && distantRes == "0"){
+    Toast.show("Выберите хотя бы один формат занятий!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
   String sexRes = "m";
   if (_sex == "Женский") sexRes = "w";
   String mathRes = "0",
@@ -134,11 +141,106 @@ void clickRegisterButton(BuildContext context) {
     if (s == "Немецкий язык") nemRes = "1";
   }
 
+  if(mathRes == "0" && rusRes == "0" && phisRes == "0" && infRes == "0" && chemRes == "0" && bioRes == "0" && histRes == "0" && socRes == "0" && litRes == "0" && geoRes == "0" && ecoRes == "0" && engRes == "0" && nemRes == "0"){
+    Toast.show("Выберите хотя бы один преподаваемый предмет!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
   for (String s in _viewsLessons) {
     if (s == "Разовые") soloRes = "1";
     if (s == "Групповые") groupRes = "1";
     if (s == "Помощь с домашней работой") homeRes = "1";
     if (s == "Обычные") standartRes = "1";
+  }
+
+  if(soloRes == "0" && groupRes == "0" && homeRes == "0" && standartRes == "0"){
+    Toast.show("Выберите хотя бы один вид занятий!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_secondName.trim() == ""){
+    Toast.show("Введите фамилию!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_firstName.trim() == ""){
+    Toast.show("Введите имя!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  List<String> birthParts = _birthday.trim().split(".");
+  if(birthParts.length != 3){
+    Toast.show("Введите корректную дату рождения!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+  int day = 0, mounth = 0, year = 0;
+  try{
+    day = int.parse(birthParts[0]);
+    mounth = int.parse(birthParts[1]);
+    year = int.parse(birthParts[2]);
+    if (day < 1 || day > 31 || mounth < 1 || mounth > 12 || year < 1920 || year > 2010) throw new Exception();
+  }
+  catch(e){
+    Toast.show("Введите корректную дату рождения!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  try{
+    int sTemp = int.parse(_stash.trim());
+    if(sTemp < 0 || sTemp > 100) throw new Exception();
+  }
+  catch(e){
+    Toast.show("Введите корректный стаж в полных годах!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_phone.trim().length != 12 || _phone.trim()[0] != "+" || _phone.trim()[1] != "7"){
+    Toast.show("Введите корректный номер телефона +7**********!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_login.trim().length == 0){
+    Toast.show("Введите корректный логин!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_password.trim().length == 0){
+    Toast.show("Введите корректный пароль!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  List emailParts = _email.trim().split("@");
+  if(emailParts.length != 2 || _email.contains(" ")){
+    Toast.show("Введите корректный email!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+  emailParts = emailParts[1].split(".");
+  if(emailParts.length < 2){
+    Toast.show("Введите корректный email!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  int priceTemp = 0;
+  try{
+    priceTemp = int.parse(_price.trim());
+    if(priceTemp < 0 || priceTemp > 10000) throw new Exception();
+  }
+  catch(e){
+    Toast.show("Введите корректную ставку в час!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
   }
 
   API
