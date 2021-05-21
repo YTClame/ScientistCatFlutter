@@ -5,8 +5,11 @@ enum SecondSexEnum { man, woman }
 class SecondSex extends StatefulWidget {
   Function _callback;
 
-  SecondSex(this._callback) {
-    _sss = new _SecondSexState(_callback);
+  SecondSex(this._callback, [String value]) {
+    if(value == null)
+      _sss = new _SecondSexState(_callback);
+    else
+      _sss = new _SecondSexState(_callback, value);
   }
 
   _SecondSexState _sss;
@@ -19,7 +22,10 @@ class _SecondSexState extends State<SecondSex> {
   SecondSexEnum _sex = SecondSexEnum.man;
   Function _callback;
 
-  _SecondSexState(this._callback);
+  _SecondSexState(this._callback, [String value]){
+    if(value != null)
+      _sex = value == "Мужской" ? SecondSexEnum.man : SecondSexEnum.woman;
+  }
 
   Widget build(BuildContext context) {
     if(_sex == SecondSexEnum.man)

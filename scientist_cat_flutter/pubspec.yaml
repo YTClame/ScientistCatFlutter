@@ -26,6 +26,7 @@ dependencies:
   toast: ^0.1.5
   http: ^0.13.1
   get_storage: ^2.0.2
+  image_picker: ^0.7.5
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -35,6 +36,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: "^0.8.0"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -48,6 +56,12 @@ flutter:
   uses-material-design: true
   assets:
     - images/logo.png
+    - images/send.png
+    - images/edit.png
+    - images/trash.png
+    - images/avatar.jpg
+    - images/adminava.png
+    - images/icon.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

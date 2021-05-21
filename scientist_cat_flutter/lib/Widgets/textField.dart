@@ -4,9 +4,15 @@ import 'package:scientist_cat_flutter/Pages/authWidget.dart';
 
 
 class TextFieldWidget extends StatelessWidget {
+  TextEditingController _controller;
   final bool _isPass;
   Function _callback;
-  TextFieldWidget(this._isPass, this._callback);
+  TextFieldWidget(this._isPass, this._callback, [String value]){
+    if(value != null)
+      _controller = new TextEditingController(text: value);
+    else
+      _controller = new TextEditingController(text: "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +29,7 @@ class TextFieldWidget extends StatelessWidget {
             onChanged: (String s){
               _callback(context, s);
             },
+            controller: _controller,
           ),
         width: 300,
         decoration: new BoxDecoration(

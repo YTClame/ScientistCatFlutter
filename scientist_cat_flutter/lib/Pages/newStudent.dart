@@ -15,6 +15,7 @@ import 'package:toast/toast.dart';
 
 import '../APIs.dart';
 import '../Settings.dart';
+import 'lkAdapter.dart';
 
 
 //Каллбеки:
@@ -82,13 +83,20 @@ void lessonsChanged(BuildContext context, List<String> lessons){
 void clickRegisterButton(BuildContext context) {
   String stotRes = "0", ttosRes = "0", distantRes = "0";
   for(String s in _formatLessons){
-    if(s == "Преподаватель ко мне")
+    if(s == "Репетитор ко мне")
       ttosRes = "1";
-    if(s == "Я к преподавателю")
+    if(s == "Я к репетитору")
       stotRes = "1";
     if(s == "Дистанционно")
       distantRes = "1";
   }
+
+  if(ttosRes == "0" && stotRes == "0" && distantRes == "0"){
+    Toast.show("Выберите хотя бы один формат занятий!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
   String sexRes = "m";
   if (_sex == "Женский")
     sexRes = "w";
@@ -122,6 +130,74 @@ void clickRegisterButton(BuildContext context) {
       nemRes = "1";
   }
 
+  if(mathRes == "0" && rusRes == "0" && phisRes == "0" && infRes == "0" && chemRes == "0" && bioRes == "0" && histRes == "0" && socRes == "0" && litRes == "0" && geoRes == "0" && ecoRes == "0" && engRes == "0" && nemRes == "0"){
+    Toast.show("Выберите хотя бы один преподаваемый предмет!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_secondName.trim() == ""){
+    Toast.show("Введите фамилию!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_firstName.trim() == ""){
+    Toast.show("Введите имя!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  List<String> birthParts = _birthday.trim().split(".");
+  if(birthParts.length != 3){
+    Toast.show("Введите корректную дату рождения!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+  int day = 0, mounth = 0, year = 0;
+  try{
+    day = int.parse(birthParts[0]);
+    mounth = int.parse(birthParts[1]);
+    year = int.parse(birthParts[2]);
+    if (day < 1 || day > 31 || mounth < 1 || mounth > 12 || year < 1920 || year > 2010) throw new Exception();
+  }
+  catch(e){
+    Toast.show("Введите корректную дату рождения!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_phone.trim().length != 12 || _phone.trim()[0] != "+" || _phone.trim()[1] != "7"){
+    Toast.show("Введите корректный номер телефона +7**********!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_login.trim().length == 0){
+    Toast.show("Введите корректный логин!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  if(_password.trim().length == 0){
+    Toast.show("Введите корректный пароль!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
+  List emailParts = _email.trim().split("@");
+  if(emailParts.length != 2 || _email.contains(" ")){
+    Toast.show("Введите корректный email!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+  emailParts = emailParts[1].split(".");
+  if(emailParts.length < 2){
+    Toast.show("Введите корректный email!", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    return;
+  }
+
   API.newStudent(_city, _secondName, _firstName, _birthday, _class, stotRes, ttosRes, distantRes, sexRes, _phone, _login, _password, _email, mathRes, rusRes, phisRes, infRes, chemRes, bioRes, histRes, socRes, litRes, geoRes, ecoRes, engRes, nemRes).then((res) {
     if(res[0] == "Error"){
         Toast.show(res[1], context, duration: Toast.LENGTH_LONG, gravity:  Toast.BOTTOM);
@@ -129,22 +205,28 @@ void clickRegisterButton(BuildContext context) {
     }
     else{
       Settings().setToken(res[1]);
-      //TODO: Тут переход на активити профиля после успешной регистрации
+      Settings().setRole("Ученик");
+      API
+          .getInfoAboutUserForToken(res[1], "Ученик")
+          .then((value) => {_loadLK(context, value)});
     }
   });
 }
 
-class NewStudentWidget extends StatelessWidget {
-  List<String> _cities;
-  DroppedList citiesList = new DroppedList([], "Загрузка", cityChanged);
-  DroppedList classList = new DroppedList(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'], "1", classChanged);
+void _loadLK(BuildContext context, Map<String, dynamic> info) {
+  Settings().setUserInfo(info);
+  API.updateOnline();
+  Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) =>
+              LkAdapter(TypePage.LkStudent)),
+          (Route<dynamic> route) => false);
+}
 
-  NewStudentWidget() {
-    API.getCities().then((cities) {
-      this._cities = cities;
-      citiesList.updateList(this._cities[0], cities);
-    });
-  }
+class NewStudentWidget extends StatelessWidget {
+  DroppedList citiesList = new DroppedList(Settings().getCities(), Settings().getCities()[0], cityChanged);
+  DroppedList classList = new DroppedList(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'], "1", classChanged);
 
   @override
   Widget build(BuildContext context) {

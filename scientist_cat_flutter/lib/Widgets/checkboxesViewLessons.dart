@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 class CheckBoxesViewLessons extends StatefulWidget {
   Function _callback;
 
-  CheckBoxesViewLessons(this._callback) {
-    _sss = new _CheckBoxesViewLessonsState(_callback);
+  CheckBoxesViewLessons(this._callback, [List<String> values]) {
+    if(values == null)
+      _sss = new _CheckBoxesViewLessonsState(_callback);
+    else
+      _sss = new _CheckBoxesViewLessonsState(_callback, values);
   }
 
   _CheckBoxesViewLessonsState _sss;
@@ -20,7 +23,14 @@ class _CheckBoxesViewLessonsState extends State<CheckBoxesViewLessons> {
   bool _homework = false;
   bool _standart = false;
 
-  _CheckBoxesViewLessonsState(this._callback);
+  _CheckBoxesViewLessonsState(this._callback, [List<String> values]){
+    if(values != null){
+      _single = values.contains("Разовые") ? true : false;
+      _group = values.contains("Групповые") ? true : false;
+      _homework = values.contains("Помощь с домашней работой") ? true : false;
+      _standart = values.contains("Обычные") ? true : false;
+    }
+  }
 
   Widget build(BuildContext context) {
     List<String> views = [];
